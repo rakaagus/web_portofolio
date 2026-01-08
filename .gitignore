@@ -4,6 +4,7 @@
 *.pyc
 *.swp
 *.g.dart
+*.freezed.dart
 .DS_Store
 .atom/
 .build/
