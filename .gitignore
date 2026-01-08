@@ -3,6 +3,7 @@
 *.log
 *.pyc
 *.swp
+*.g.dart
 .DS_Store
 .atom/
 .build/
@@ -12,7 +13,6 @@
 .swiftpm/
 migrate_working_dir/
 .env
-setup.sh
 
 # IntelliJ related
 *.iml
