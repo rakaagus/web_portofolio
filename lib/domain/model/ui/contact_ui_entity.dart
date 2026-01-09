@@ -1,7 +1,9 @@
-import 'package:drift/drift.dart';
+import 'package:equatable/equatable.dart';
 
-class ContactUiEntity extends Table {
-  late final email = text()();
-  late final phoneNumber = text()();
-  late final address = text()();
+class ContactUiEntity extends Equatable {
+
+
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
 }

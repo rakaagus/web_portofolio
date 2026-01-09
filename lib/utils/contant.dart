@@ -1,7 +1,6 @@
-
-const String KEY_TABLE_PORTO = "portos";
-const String KEY_TABLE_SKILL = "skills";
-const String KEY_TABLE_EDUCATION = "educations";
-const String KEY_TABLE_ORGANIZATION = "organizations";
-const String KEY_TABLE_EXPERIENCES = "experiences";
-const String KEY_TABLE_IMAGE = "images";
+const String KEY_TABLE_PORTO = "PortoData";
+const String KEY_TABLE_SKILL = "SkillData";
+const String KEY_TABLE_EDUCATION = "EducationData";
+const String KEY_TABLE_ORGANIZATION = "OrganizationData";
+const String KEY_TABLE_EXPERIENCES = "ExperienceData";
+const String KEY_TABLE_IMAGE = "ImageData";

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart' show Equatable;
+import 'package:web_portofolio/domain/model/ui/ui_data_entity.dart';
 
 abstract class BaseBlocEvent extends Equatable { }
 
