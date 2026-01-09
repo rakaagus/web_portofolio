@@ -1,0 +1,19 @@
+import 'package:equatable/equatable.dart' show Equatable;
+
+abstract class BaseBlocEvent extends Equatable { }
+
+abstract class BaseBlocState extends Equatable { }
+
+class LoadingState extends BaseBlocState {
+  @override
+  List<Object> get props => [];
+}
+
+abstract class ReturnDataState<T> extends BaseBlocState {
+  UIDataEntity<T> entity = UIDataEntity();
+
+  ReturnDataState(this.entity);
+
+  @override
+  List<Object> get props => [entity];
+}
