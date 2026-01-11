@@ -1,3 +1,5 @@
+// Table Data Named
+
 const String KEY_TABLE_PORTO = "PortoData";
 const String KEY_TABLE_SKILL = "SkillData";
 const String KEY_TABLE_EDUCATION = "EducationData";
