@@ -50,39 +50,39 @@ class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
           curve: Curves.fastOutSlowIn,
           width: _isSidebarHovered ? 200 : 70,
           margin: const EdgeInsets.only(right: 20),
-          padding: const EdgeInsets.symmetric(vertical: 20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
             border: Border.all(
-              color: isDark
-                  ? Colors.white.withOpacity(0.12)
-                  : Colors.white.withOpacity(0.3),
+              color: Colors.white.withOpacity(isDark ? 0.12 : 0.4),
               width: 1.2,
             ),
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                (isDark ? Colors.white : Colors.black).withOpacity(0.08),
-                (isDark ? Colors.white : Colors.black).withOpacity(0.02),
+                Colors.white.withOpacity(isDark ? 0.08 : 0.2),
+                Colors.white.withOpacity(isDark ? 0.02 : 0.1),
               ],
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                color: Colors.black.withOpacity(isDark ? 0.4 : 0.1),
                 blurRadius: 30,
-                offset: const Offset(0, 10),
+                offset: const Offset(0, 15),
               )
             ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(30),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: _navMenuItems(isVertical: true),
+              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: _navMenuItems(isVertical: true),
+                  ),
                 ),
               ),
             ),
@@ -114,10 +114,9 @@ class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
   List<Widget> _navMenuItems({bool isVertical = false}) {
     List<Map<String, dynamic>> items = [
       {'icon': Icons.home_rounded, 'label': 'Home'},
-      {'icon': Icons.rocket_launch_rounded, 'label': 'Projects'},
-      {'icon': Icons.school_rounded, 'label': 'Education'},
       {'icon': Icons.work_rounded, 'label': 'Experience'},
-      {'icon': Icons.email_rounded, 'label': 'Contact Me'},
+      {'icon': Icons.school_rounded, 'label': 'Education'},
+      {'icon': Icons.rocket_launch_rounded, 'label': 'Projects'},
     ];
 
     return items.asMap().entries.map((entry) {
@@ -182,34 +181,44 @@ class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
         child: IntrinsicWidth(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(30),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-              child: Container(
-                height: 65,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      (isDark ? Colors.white : Colors.black).withOpacity(0.08),
-                      (isDark ? Colors.white : Colors.black).withOpacity(0.03),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: isDark
-                        ? Colors.white.withOpacity(0.15)
-                        : Colors.white.withOpacity(0.4),
-                    width: 1.5,
-                  ),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: _navMenuItems(isVertical: false),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: Container(
+                  height: 65,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withOpacity(isDark ? 0.08 : 0.25),
+                        Colors.white.withOpacity(isDark ? 0.03 : 0.15),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(isDark ? 0.15 : 0.5),
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _navMenuItems(isVertical: false),
+                  ),
                 ),
               ),
             ),

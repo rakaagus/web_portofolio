@@ -42,7 +42,10 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isMobile = screenWidth < 900;
     final colorScheme = Theme.of(context).colorScheme;
+
     return ListView(
       controller: widget.scrollController,
       padding: EdgeInsets.zero,
@@ -127,7 +130,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                 ),
               ),
               Positioned(
-                bottom: 40,
+                bottom: isMobile ? 110 : 40,
                 child: AnimatedBuilder(
                     animation: _arrowAnimation,
                     builder: (context, child) {
