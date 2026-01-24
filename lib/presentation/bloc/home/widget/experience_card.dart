@@ -28,7 +28,7 @@ class ExperienceCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF111111) : Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(32),
         border: Border.all(
           color: isDark ? Colors.white.withOpacity(0.09) : Colors.black.withOpacity(0.08),
           width: 2,
@@ -43,7 +43,7 @@ class ExperienceCard extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(32),
               ),
               child: Icon(logo, color: color, size: 32),
             ),

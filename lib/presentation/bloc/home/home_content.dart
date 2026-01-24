@@ -1,6 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:web_portofolio/presentation/bloc/home/widget/experience_card.dart';
+import 'package:web_portofolio/presentation/bloc/home/widget/project_card.dart';
+import 'package:web_portofolio/presentation/widget/global_button.dart';
+import 'package:web_portofolio/presentation/widget/global_footer.dart';
 import 'package:web_portofolio/presentation/widget/tech_chip.dart';
 
 class HomeContent extends StatefulWidget {
@@ -54,7 +57,10 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       children: [
         _buildHeroSection(colorScheme, isMobile),
         _buildSectionAbout(colorScheme, isMobile, screenWidth),
-        _buildSectionExperience(colorScheme, isMobile, screenWidth)
+        _buildSectionExperience(colorScheme, isMobile, screenWidth),
+        _buildSectionProjects(colorScheme, isMobile, screenWidth),
+        _buildSectionGetInTouch(colorScheme, isMobile),
+        const GlobalFooter()
       ],
     );
   }
@@ -155,26 +161,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                   ),
                 ),
                 const SizedBox(height: 40),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: colorScheme.onSurface,
-                    foregroundColor: colorScheme.surface,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text("View my work", style: TextStyle(fontWeight: FontWeight.bold)),
-                      SizedBox(width: 8),
-                      Icon(Icons.arrow_forward, size: 18),
-                    ],
-                  ),
-                ),
+                GlobalButton(title: "View my work", onPressed: () {}),
               ],
             ),
           ),
@@ -233,7 +220,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
           Container(
             decoration: BoxDecoration(
               color: colorScheme.surface,
-              borderRadius: BorderRadius.circular(32),
+              borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
@@ -400,30 +387,171 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                   ),
                 ],
               ),
-
               const SizedBox(height: 50),
-
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colorScheme.onSurface,
-                  foregroundColor: colorScheme.surface,
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("View full experience", style: TextStyle(fontWeight: FontWeight.bold)),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward, size: 18),
-                  ],
-                ),
-              ),
+              GlobalButton(title: "View full experience", onPressed: () {})
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSectionProjects(ColorScheme colorScheme, bool isMobile, double screenWidth) {
+    return Container(
+      width: double.infinity,
+      color: colorScheme.surface,
+      padding: EdgeInsets.symmetric(
+        vertical: 100,
+        horizontal: isMobile ? 24 : 40,
+      ),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Column(
+            children: [
+              // Header Section
+              Text(
+                "Projects",
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "Check out some of my recent work",
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 60),
+              Wrap(
+                spacing: 24,
+                runSpacing: 24,
+                alignment: WrapAlignment.center,
+                children: [
+                  ProjectCard(
+                    imagePath: 'assets/project_parking.png',
+                    title: "Smart Parking System",
+                    description: "A comprehensive parking solution with NFC integration, real-time monitoring, and seamless mobile payments.",
+                    techStacks: [
+                      TechChip(label: "Flutter", color: Colors.blue),
+                      TechChip(label: "Kotlin", color: Colors.orange),
+                      TechChip(label: "NFC", color: Colors.teal),
+                      TechChip(label: "Firebase", color: Colors.amber),
+                    ],
+                  ),
+                  ProjectCard(
+                    imagePath: 'assets/project_booking.png',
+                    title: "Wedding Reservation Platform",
+                    description: "Modular wedding invitation and attendance reservation system built for high scalability and customization.",
+                    techStacks: [
+                      TechChip(label: "Flutter Web", color: Colors.cyan),
+                      TechChip(label: "Dart", color: Colors.blue),
+                      TechChip(label: "GetX", color: Colors.purple),
+                    ],
+                  ),
+                  ProjectCard(
+                    imagePath: 'assets/project_pos.png',
+                    title: "Smart POS Handheld",
+                    description: "Android-based Point of Sale system optimized for handheld devices with thermal printer and e-money support.",
+                    techStacks: [
+                      TechChip(label: "Android SDK", color: Colors.green),
+                      TechChip(label: "Kotlin", color: Colors.orange),
+                      TechChip(label: "Room DB", color: Colors.blueGrey),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 60),
+              GlobalButton(title: "View all projects", onPressed: () {})
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionGetInTouch(ColorScheme colorScheme, bool isMobile) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      width: double.infinity,
+      color: isDark ? Colors.black : Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 24),
+      child: Column(
+        children: [
+          Text(
+            "Get in Touch",
+            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+              fontSize: 40,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            "Have a project in mind? Let's work together.",
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 60),
+          Container(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: Column(
+              children: [
+                _buildInputField("Name", "Your name", isDark),
+                const SizedBox(height: 24),
+                _buildInputField("Email", "Your email", isDark),
+                const SizedBox(height: 24),
+                _buildInputField("Message", "Your message", isDark, maxLines: 5),
+                const SizedBox(height: 40),
+
+                // Tombol Send Message
+                SizedBox(
+                  width: double.infinity,
+                  height: 55,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isDark ? Colors.white : const Color(0xFF1A1A1A),
+                      foregroundColor: isDark ? Colors.black : Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Send Message", style: TextStyle(fontWeight: FontWeight.bold)),
+                        SizedBox(width: 12),
+                        Icon(Icons.send_rounded, size: 18),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInputField(String label, String hint, bool isDark, {int maxLines = 1}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
+        TextField(
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            hintText: hint,
+            filled: true,
+            fillColor: isDark ? const Color(0xFF111111) : const Color(0xFFF1F5F9),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.all(18),
+          ),
+        ),
+      ],
     );
   }
 }
