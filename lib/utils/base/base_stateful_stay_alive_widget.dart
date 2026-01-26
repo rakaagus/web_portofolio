@@ -18,6 +18,8 @@ abstract class BaseStatefulWidgetStayAlive<T extends StatefulWidget> extends Sta
   bool isAppBarVisible = true;
   double _lastScrollOffset = 0.0;
 
+  bool showBackToTop = false;
+
   @override
   void initState() {
     super.initState();
@@ -26,15 +28,25 @@ abstract class BaseStatefulWidgetStayAlive<T extends StatefulWidget> extends Sta
   }
 
   void _baseScrollListener() {
+    double screenHeight = MediaQuery.of(context).size.height;
+
     if (baseScrollController.offset <= 0) {
       if (!isAppBarVisible) setState(() => isAppBarVisible = true);
       return;
     }
+
+    if (baseScrollController.offset > screenHeight * 0.5 && !showBackToTop) {
+      setState(() => showBackToTop = true);
+    } else if (baseScrollController.offset <= screenHeight * 0.5 && showBackToTop) {
+      setState(() => showBackToTop = false);
+    }
+
     if (baseScrollController.offset > _lastScrollOffset && isAppBarVisible) {
       setState(() => isAppBarVisible = false);
     } else if (baseScrollController.offset < _lastScrollOffset && !isAppBarVisible) {
       setState(() => isAppBarVisible = true);
     }
+
     _lastScrollOffset = baseScrollController.offset;
   }
 
@@ -72,16 +84,18 @@ abstract class BaseStatefulWidgetStayAlive<T extends StatefulWidget> extends Sta
             appBar: null,
             body: Stack(
               children: [
-                Positioned.fill(
-                  child: isDesktop
-                      ? Row(
-                    children: [
-                      Expanded(child: _buildContent()),
-                      if (generateSideBar() != null)
-                        generateSideBar()!, // Sidebar Kanan
-                    ],
-                  )
-                      : _buildContent(),
+                Positioned.fill(child: _buildContent()),
+                if (isDesktop && generateSideBar() != null)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                    child: generateSideBar()!,
+                  ),
+                Positioned(
+                  right: isDesktop ? 30 : 25,
+                  bottom: isDesktop ? 40 : 110,
+                  child: _buildBackToTopButton(isDesktop),
                 ),
                 if (isUseAppBar) _buildFloatingAppBar(isDesktop),
               ],
@@ -113,7 +127,7 @@ abstract class BaseStatefulWidgetStayAlive<T extends StatefulWidget> extends Sta
             child: Container(
               height: 60,
               constraints: const BoxConstraints(maxWidth: 1600),
-              padding: const EdgeInsets.symmetric(horizontal: 10), // Padding dikecilkan agar tombol tidak terlalu menjorok
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
                 color: (isDark ? Colors.black : Colors.white).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
@@ -127,7 +141,7 @@ abstract class BaseStatefulWidgetStayAlive<T extends StatefulWidget> extends Sta
                   if (appBarUseBackIcon)
                     IconButton(
                       icon: Icon(
-                        Icons.arrow_back_ios_new_rounded, // Icon ala macOS/iOS
+                        Icons.arrow_back_ios_new_rounded,
                         color: isDark ? Colors.white : Colors.black87,
                         size: 20,
                       ),
@@ -146,6 +160,68 @@ abstract class BaseStatefulWidgetStayAlive<T extends StatefulWidget> extends Sta
                   const Spacer(),
                   if (getRightAction() != null) getRightAction()!,
                 ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBackToTopButton(bool isDesktop) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return AnimatedScale(
+      duration: const Duration(milliseconds: 300),
+      scale: showBackToTop ? 1.0 : 0.0,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 300),
+        opacity: showBackToTop ? 1.0 : 0.0,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              )
+            ],
+          ),
+          child: GestureDetector(
+            onTap: () {
+              baseScrollController.animateTo(0,
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut);
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withOpacity(isDark ? 0.08 : 0.2),
+                        Colors.white.withOpacity(isDark ? 0.02 : 0.1),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(isDark ? 0.15 : 0.4),
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.keyboard_arrow_up_rounded,
+                    color: isDark ? Colors.white : Colors.black87,
+                    size: 30,
+                  ),
+                ),
               ),
             ),
           ),
