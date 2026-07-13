@@ -47,7 +47,7 @@ class _LoadingScreenState extends BaseStatefulWidget<LoadingScreen> {
   }
 
   void _navigateToMain() {
-    Navigator.pushReplacementNamed(context, "/home");
+    Navigator.pushReplacementNamed(context, "/");
   }
 
   @override

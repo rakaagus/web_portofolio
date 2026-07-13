@@ -4,6 +4,7 @@ import 'package:web_portofolio/presentation/bloc/home/widget/experience_card.dar
 import 'package:web_portofolio/presentation/bloc/home/widget/project_card.dart';
 import 'package:web_portofolio/presentation/widget/global_button.dart';
 import 'package:web_portofolio/presentation/widget/global_footer.dart';
+import 'package:web_portofolio/presentation/widget/gradient_background.dart';
 import 'package:web_portofolio/presentation/widget/tech_chip.dart';
 
 class HomeContent extends StatefulWidget {
@@ -65,41 +66,6 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildMeshGradient(ColorScheme colorScheme) {
-    return Stack(
-      children: [
-        Positioned(
-          top: 100,
-          left: -50,
-          child: _buildBlob(colorScheme.primary.withOpacity(0.15), 400),
-        ),
-        Positioned(
-          bottom: 100,
-          right: -50,
-          child: _buildBlob(Colors.orange.withOpacity(0.1), 350),
-        ),
-        // Filter Blur Global
-        Positioned.fill(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
-            child: Container(color: Colors.transparent),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBlob(Color color, double size) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
-    );
-  }
-
   Widget _buildHeroSection(ColorScheme colorScheme, bool isMobile) {
     return Container(
       height: MediaQuery.of(context).size.height,
@@ -107,7 +73,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       child: Stack(
         alignment: Alignment.center,
         children: [
-          _buildMeshGradient(colorScheme),
+          const MeshGradientBackground(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(

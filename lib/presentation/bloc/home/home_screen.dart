@@ -8,15 +8,22 @@ import 'package:web_portofolio/presentation/bloc/home/home_content.dart';
 import 'package:web_portofolio/utils/base/base_stateful_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int selectedIndex;
+  const HomeScreen({super.key, this.selectedIndex = 0});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
-  int _selectedIndex = 0;
   bool _isSidebarHovered = false;
+
+  final List<String> _routes = [
+    '/',
+    '/experience',
+    '/education',
+    '/projects'
+  ];
 
   @override
   String getTitleLabel() => "AFY Dev";
@@ -99,16 +106,18 @@ class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
 
   @override
   Widget generateBody() {
-    return IndexedStack(
-      index: _selectedIndex,
-      children: [
-        HomeContent(scrollController: baseScrollController),
-        const Center(child: Text("Halaman Project")),
-        const Center(child: Text("Halaman Education")),
-        const Center(child: Text("Halaman Experience")),
-        const Center(child: Text("Halaman Contact Me")),
-      ],
-    );
+    switch (widget.selectedIndex) {
+      case 0:
+        return HomeContent(scrollController: baseScrollController);
+      case 1:
+        return const Center(child: Text("Halaman Experience"));
+      case 2:
+        return const Center(child: Text("Halaman Education"));
+      case 3:
+        return const Center(child: Text("Halaman Project"));
+      default:
+        return HomeContent(scrollController: baseScrollController);
+    }
   }
 
   List<Widget> _navMenuItems({bool isVertical = false}) {
@@ -121,7 +130,7 @@ class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
 
     return items.asMap().entries.map((entry) {
       int idx = entry.key;
-      bool isSelected = _selectedIndex == idx;
+      bool isSelected = widget.selectedIndex == idx;
 
       return Padding(
         padding: EdgeInsets.symmetric(
@@ -129,7 +138,9 @@ class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
           horizontal: isVertical ? 8 : 2,
         ),
         child: InkWell(
-          onTap: () => setState(() => _selectedIndex = idx),
+          onTap: () => {
+            Navigator.pushReplacementNamed(context, _routes[idx])
+          },
           borderRadius: BorderRadius.circular(15),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
