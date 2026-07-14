@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web_portofolio/presentation/bloc/loading/initial_loading.dart';
+import 'package:web_portofolio/presentation/bloc/loading/page_transition.dart';
 
 abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -20,16 +22,12 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
   double _lastScrollOffset = 0.0;
 
   bool showBackToTop = false;
-
-  // ========================================================
-  // STATE MANAGEMENT UNTUK 2 JENIS LOADING
-  // ========================================================
-  // Variabel static ini akan bertahan selama tab browser tidak di-refresh total
   static bool _hasDoneInitialLoad = false;
 
   bool _isInitialLoading = false;
-  bool _isPageTransitionLoading = false;
+  bool _isPageTransitionLoading = _hasDoneInitialLoad;
   double _loadingProgressValue = 0.0;
+  bool _isExitingPage = false;
   Timer? _loadingTimer;
 
   @override
@@ -37,25 +35,20 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
     super.initState();
     baseScrollController = ScrollController();
     baseScrollController.addListener(_baseScrollListener);
-
     _determineLoadingType();
   }
 
   void _determineLoadingType() {
     if (!_hasDoneInitialLoad) {
-      // 1. INITIAL LOADING (Pertama kali buka atau ketika web di-refresh total)
       _isInitialLoading = true;
       _startLoadingSimulation(isInitial: true);
     } else {
-      // 2. TRANSITION LOADING (Hanya dipicu saat pindah rute/halaman internal via menu)
-      _isPageTransitionLoading = true;
       _startLoadingSimulation(isInitial: false);
     }
   }
 
   void _startLoadingSimulation({required bool isInitial}) {
-    // Jika hanya transisi halaman internal, durasi dibuat super cepat (instant & responsif)
-    final duration = isInitial ? const Duration(milliseconds: 15) : const Duration(milliseconds: 3);
+    final duration = isInitial ? const Duration(milliseconds: 39) : const Duration(milliseconds: 10);
     const totalSteps = 100;
     int currentStep = 0;
 
@@ -71,7 +64,7 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
         setState(() {
           if (isInitial) {
             _isInitialLoading = false;
-            _hasDoneInitialLoad = true; // Kunci agar loading besar tidak terulang saat navigasi biasa
+            _hasDoneInitialLoad = true;
           } else {
             _isPageTransitionLoading = false;
           }
@@ -105,7 +98,7 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
   @override
   void dispose() {
     baseScrollController.dispose();
-    _loadingTimer?.cancel(); // Mencegah memory leak akibat timer yang masih berjalan
+    _loadingTimer?.cancel();
     super.dispose();
   }
 
@@ -123,6 +116,7 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
 
   @override
   Widget build(BuildContext context) {
+    final colorTheme = Theme.of(context).colorScheme;
     return _provideBlocProvider(
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -135,38 +129,24 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
             appBar: null,
             body: Stack(
               children: [
-                Positioned.fill(child: _buildContent()),
-                if (_isPageTransitionLoading)
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: SafeArea(
-                      child: LinearProgressIndicator(
-                        value: _loadingProgressValue,
-                        backgroundColor: Colors.transparent,
-                        color: Theme.of(context).primaryColor,
-                        minHeight: 4,
-                      ),
-                    ),
+                _buildContent(),
+                Positioned.fill(
+                  child: PremiumPageTransitionOverlay(
+                    isLoading: _isPageTransitionLoading || _isExitingPage,
+                    color: colorTheme.onSurface,
                   ),
-                if (!_isInitialLoading && isDesktop && generateSideBar() != null)
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                    child: generateSideBar()!,
-                  ),
+                ),
+                _buildAnimatedSidebar(isDesktop),
                 Positioned(
                   right: isDesktop ? 30 : 25,
                   bottom: isDesktop ? 40 : 110,
                   child: _buildBackToTopButton(isDesktop),
                 ),
-                if (!_isInitialLoading && isUseAppBar)
-                  _buildFloatingAppBar(isDesktop),
+                _buildFloatingAppBar(isDesktop),
+                _buildAnimatedBottomBar(isDesktop),
               ],
             ),
-            bottomNavigationBar: (!_isInitialLoading && !isDesktop) ? generateBottomBar() : null,
+            bottomNavigationBar: null,
           );
         },
       ),
@@ -175,124 +155,131 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
 
   Widget _buildContent() {
     if (_isInitialLoading) {
-      return Container(
-        color: const Color(0xFFF8FAFC),
-        width: double.infinity,
-        height: double.infinity,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Hero(
-                tag: 'logo',
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      )
-                    ],
-                  ),
-                  child: const FlutterLogo(size: 80),
-                ),
-              ),
-              const SizedBox(height: 48),
-              SizedBox(
-                width: 280,
-                child: Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: LinearProgressIndicator(
-                        value: _loadingProgressValue,
-                        backgroundColor: const Color(0xFFE0E7FF),
-                        color: Theme.of(context).primaryColor,
-                        minHeight: 10,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "Crafting Your Experience...",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF64748B),
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+      return PremiumLoadingWrapper(
+        onComplete: () {
+          setState(() {
+            _isInitialLoading = false;
+          });
+        },
+        child: generateBody(),
       );
     }
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 300),
-      child: generateBody(),
-    );
+    return generateBody();
   }
 
   Widget _buildFloatingAppBar(bool isDesktop) {
+    if (!isUseAppBar) return const SizedBox.shrink();
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final bool isHiding = _isInitialLoading || _isPageTransitionLoading;
+
+    double topPosition = 20;
+    if (isHiding) {
+      topPosition = -120;
+    } else if (!isAppBarVisible) {
+      topPosition = -100;
+    }
+
     return AnimatedPositioned(
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeInOut,
-      top: isAppBarVisible ? 20 : -100,
+      duration: const Duration(milliseconds: 650),
+      curve: Curves.easeOutBack,
+      top: topPosition,
       left: isDesktop ? 20 : 15,
       right: isDesktop ? (generateSideBar() != null ? 100 : 20) : 15,
-      child: Container(
-        alignment: Alignment.center,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-            child: Container(
-              height: 60,
-              constraints: const BoxConstraints(maxWidth: 1600),
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                color: (isDark ? Colors.black : Colors.white).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.4),
-                  width: 1.5,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 400),
+        opacity: isHiding ? 0.0 : 1.0,
+        child: Container(
+          alignment: Alignment.center,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+              child: Container(
+                height: 60,
+                constraints: const BoxConstraints(maxWidth: 1600),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: (isDark ? Colors.black : Colors.white).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.4),
+                    width: 1.5,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    if (appBarUseBackIcon)
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: isDark ? Colors.white : Colors.black87,
+                          size: 20,
+                        ),
+                        onPressed: () => Navigator.maybePop(context),
+                      )
+                    else if (getLeftIcon() != null)
+                      getLeftIcon()!,
+                    const SizedBox(width: 5),
+                    const FlutterLogo(size: 30),
+                    const SizedBox(width: 10),
+                    Text(
+                      getTitleLabel(),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    if (getRightAction() != null) getRightAction()!,
+                  ],
                 ),
               ),
-              child: Row(
-                children: [
-                  if (appBarUseBackIcon)
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color: isDark ? Colors.white : Colors.black87,
-                        size: 20,
-                      ),
-                      onPressed: () => Navigator.maybePop(context),
-                    )
-                  else if (getLeftIcon() != null)
-                    getLeftIcon()!,
-
-                  const SizedBox(width: 5),
-                  const FlutterLogo(size: 30),
-                  const SizedBox(width: 10),
-                  Text(
-                    getTitleLabel(),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const Spacer(),
-                  if (getRightAction() != null) getRightAction()!,
-                ],
-              ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnimatedSidebar(bool isDesktop) {
+    final sidebar = generateSideBar();
+    if (sidebar == null || !isDesktop) return const SizedBox.shrink();
+
+    final bool isHiding = _isInitialLoading || _isPageTransitionLoading;
+
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 650),
+      curve: Curves.easeOutBack,
+      right: isHiding ? -120 : 0,
+      top: 0,
+      bottom: 0,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 450),
+        opacity: isHiding ? 0.0 : 1.0,
+        child: sidebar,
+      ),
+    );
+  }
+
+  Widget _buildAnimatedBottomBar(bool isDesktop) {
+    final bottomBar = generateBottomBar();
+    if (bottomBar == null || isDesktop) return const SizedBox.shrink();
+
+    final bool isHiding = _isInitialLoading || _isPageTransitionLoading;
+
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: AnimatedSlide(
+        offset: isHiding ? const Offset(0, 1.5) : const Offset(0, 0),
+        duration: const Duration(milliseconds: 650),
+        curve: Curves.easeOutBack,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 400),
+          opacity: isHiding ? 0.0 : 1.0,
+          child: SafeArea(
+            top: false,
+            child: bottomBar,
           ),
         ),
       ),
@@ -359,6 +346,27 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
         ),
       ),
     );
+  }
+
+  void customNavigateTo(BuildContext context, String url, {Object? arguments}) {
+    setState(() {
+      _isExitingPage = true;
+    });
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
+      Navigator.pushNamed(
+        context,
+        url,
+        arguments: arguments,
+      ).then((_) {
+        if (mounted) {
+          setState(() {
+            _isExitingPage = false;
+          });
+        }
+      });
+    });
   }
 
   Widget _provideBlocProvider({required Widget child}) {

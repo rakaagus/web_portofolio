@@ -4,8 +4,11 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web_portofolio/presentation/Navigation/bottombar_widget.dart';
+import 'package:web_portofolio/presentation/Navigation/sidebar_widget.dart';
 import 'package:web_portofolio/presentation/bloc/home/home_content.dart';
 import 'package:web_portofolio/utils/base/base_stateful_widget.dart';
+import 'package:web_portofolio/presentation/Navigation/item_menu_data.dart';
 
 class HomeScreen extends StatefulWidget {
   final int selectedIndex;
@@ -16,15 +19,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
-  bool _isSidebarHovered = false;
-
-  final List<String> _routes = [
-    '/',
-    '/experience',
-    '/education',
-    '/projects'
-  ];
-
   @override
   String getTitleLabel() => "AFY Dev";
 
@@ -47,61 +41,18 @@ class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
 
   @override
   Widget? generateSideBar() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isSidebarHovered = true),
-      onExit: (_) => setState(() => _isSidebarHovered = false),
-      child: Center(
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.fastOutSlowIn,
-          width: _isSidebarHovered ? 200 : 70,
-          margin: const EdgeInsets.only(right: 20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(
-              color: Colors.white.withOpacity(isDark ? 0.12 : 0.4),
-              width: 1.2,
-            ),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.white.withOpacity(isDark ? 0.08 : 0.2),
-                Colors.white.withOpacity(isDark ? 0.02 : 0.1),
-              ],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.4 : 0.1),
-                blurRadius: 30,
-                offset: const Offset(0, 15),
-              )
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(30),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: _navMenuItems(isVertical: true),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
+    return LiquidGlassSidebar(
+      selectedIndex: widget.selectedIndex,
+      menuData: appMenuData,
     );
   }
 
   @override
   Widget? generateBottomBar() {
-    return _buildGlassBottomBar();
+    return GlassBottomBar(
+      selectedIndex: widget.selectedIndex,
+      menuData: appMenuData,
+    );
   }
 
   @override
@@ -118,124 +69,5 @@ class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
       default:
         return HomeContent(scrollController: baseScrollController);
     }
-  }
-
-  List<Widget> _navMenuItems({bool isVertical = false}) {
-    List<Map<String, dynamic>> items = [
-      {'icon': Icons.home_rounded, 'label': 'Home'},
-      {'icon': Icons.work_rounded, 'label': 'Experience'},
-      {'icon': Icons.school_rounded, 'label': 'Education'},
-      {'icon': Icons.rocket_launch_rounded, 'label': 'Projects'},
-    ];
-
-    return items.asMap().entries.map((entry) {
-      int idx = entry.key;
-      bool isSelected = widget.selectedIndex == idx;
-
-      return Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: isVertical ? 6 : 0,
-          horizontal: isVertical ? 8 : 2,
-        ),
-        child: InkWell(
-          onTap: () => {
-            Navigator.pushReplacementNamed(context, _routes[idx])
-          },
-          borderRadius: BorderRadius.circular(15),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            constraints: BoxConstraints(
-              minWidth: isVertical ? (_isSidebarHovered ? 160 : 50) : 70,
-              maxWidth: isVertical ? (_isSidebarHovered ? 160 : 50) : 80,
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-              color: isSelected ? Colors.blue.withOpacity(0.2) : Colors.transparent,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  entry.value['icon'],
-                  color: isSelected ? Colors.blue : Colors.grey.shade400,
-                  size: 22,
-                ),
-                if (isVertical && _isSidebarHovered)
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        entry.value['label'],
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: isSelected ? Colors.blue : Colors.grey.shade600,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
-
-  Widget _buildGlassBottomBar() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
-        child: IntrinsicWidth(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                child: Container(
-                  height: 65,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withOpacity(isDark ? 0.08 : 0.25),
-                        Colors.white.withOpacity(isDark ? 0.03 : 0.15),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(isDark ? 0.15 : 0.5),
-                      width: 1.2,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: _navMenuItems(isVertical: false),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
