@@ -3,26 +3,24 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:web_portofolio/presentation/Navigation/bottombar_widget.dart';
+import 'package:web_portofolio/presentation/Navigation/bottombar_widget.dart' show GlassBottomBar;
 import 'package:web_portofolio/presentation/Navigation/sidebar_widget.dart';
-import 'package:web_portofolio/presentation/bloc/home/home_content.dart';
 import 'package:web_portofolio/utils/base/base_stateful_widget.dart';
-import 'package:web_portofolio/presentation/Navigation/item_menu_data.dart';
 
-class HomeScreen extends StatefulWidget {
+class ExperienceScreen extends StatefulWidget {
   final int selectedIndex;
-  const HomeScreen({super.key, this.selectedIndex = 0});
+  const ExperienceScreen({super.key, this.selectedIndex = 0});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ExperienceScreen> createState() => _ExperienceScreenState();
 }
 
-class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
+class _ExperienceScreenState extends BaseStatefulWidget<ExperienceScreen> {
   @override
-  String getTitleLabel() => "AFY Dev";
+  String getTitleLabel() => "My Experiences";
 
   @override
-  String get screenName => "Home";
+  String get screenName => "Experiences";
 
   @override
   List<BlocProvider> getListBloc(BuildContext context) => [];
@@ -40,16 +38,16 @@ class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
 
   @override
   Widget? generateSideBar() {
-    return LiquidGlassSidebar(selectedIndex: 0);
+    return LiquidGlassSidebar(selectedIndex: 1);
   }
 
   @override
   Widget? generateBottomBar() {
-    return GlassBottomBar(selectedIndex: 0);
+    return GlassBottomBar(selectedIndex: 1);
   }
 
   @override
   Widget generateBody() {
-    return HomeContent(scrollController: baseScrollController);
+    return const Center(child: Text("Halaman Experience"));
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:web_portofolio/presentation/bloc/education/education_screen.dart';
+import 'package:web_portofolio/presentation/bloc/experience/experience_screen.dart';
 import 'package:web_portofolio/presentation/bloc/home/home_screen.dart' show HomeScreen;
 import 'package:web_portofolio/presentation/bloc/not_found/not_found_screen.dart';
+import 'package:web_portofolio/presentation/bloc/project/project_screen.dart';
 import 'package:web_portofolio/utils/color_theme.dart';
 import 'package:web_portofolio/utils/type_theme.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
@@ -48,16 +51,16 @@ class MyPortoApp extends StatelessWidget{
       Widget page;
       switch (settings.name) {
         case '/':
-          page = const HomeScreen(selectedIndex: 0);
+          page = const HomeScreen();
           break;
         case '/experience':
-          page = const HomeScreen(selectedIndex: 1);
+          page = const ExperienceScreen();
           break;
         case '/education':
-          page = const HomeScreen(selectedIndex: 2);
+          page = const EducationScreen();
           break;
         case '/projects':
-          page = const HomeScreen(selectedIndex: 3);
+          page = const ProjectScreen();
           break;
         default:
           return MaterialPageRoute(
