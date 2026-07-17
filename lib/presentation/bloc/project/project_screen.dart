@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_portofolio/presentation/Navigation/bottombar_widget.dart' show GlassBottomBar;
 import 'package:web_portofolio/presentation/Navigation/sidebar_widget.dart';
+import 'package:web_portofolio/presentation/bloc/project/project_content.dart';
 import 'package:web_portofolio/utils/base/base_stateful_widget.dart';
 
 class ProjectScreen extends StatefulWidget {
@@ -48,6 +49,6 @@ class _ProjectScreenState extends BaseStatefulWidget<ProjectScreen> {
 
   @override
   Widget generateBody() {
-    return const Center(child: Text("Halaman Project"));
+    return ProjectContent(scrollController: baseScrollController);
   }
 }

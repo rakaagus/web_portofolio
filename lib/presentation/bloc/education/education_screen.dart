@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_portofolio/presentation/Navigation/bottombar_widget.dart' show GlassBottomBar;
 import 'package:web_portofolio/presentation/Navigation/sidebar_widget.dart';
+import 'package:web_portofolio/presentation/bloc/education/education_content.dart';
 import 'package:web_portofolio/utils/base/base_stateful_widget.dart';
 
 class EducationScreen extends StatefulWidget {
@@ -48,6 +49,6 @@ class _EducationScreenState extends BaseStatefulWidget<EducationScreen> {
 
   @override
   Widget generateBody() {
-    return const Center(child: Text("Halaman Education"));
+    return EducationContent(scrollController: baseScrollController);
   }
 }

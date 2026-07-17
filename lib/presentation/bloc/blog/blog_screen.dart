@@ -5,23 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_portofolio/presentation/Navigation/bottombar_widget.dart' show GlassBottomBar;
 import 'package:web_portofolio/presentation/Navigation/sidebar_widget.dart';
-import 'package:web_portofolio/presentation/bloc/experience/experience_content.dart';
+import 'package:web_portofolio/presentation/bloc/blog/blog_content.dart';
+import 'package:web_portofolio/presentation/bloc/project/project_content.dart';
 import 'package:web_portofolio/utils/base/base_stateful_widget.dart';
 
-class ExperienceScreen extends StatefulWidget {
+class BlogScreen extends StatefulWidget {
   final int selectedIndex;
-  const ExperienceScreen({super.key, this.selectedIndex = 0});
+  const BlogScreen({super.key, this.selectedIndex = 0});
 
   @override
-  State<ExperienceScreen> createState() => _ExperienceScreenState();
+  State<BlogScreen> createState() => _BlogScreenState();
 }
 
-class _ExperienceScreenState extends BaseStatefulWidget<ExperienceScreen> {
+class _BlogScreenState extends BaseStatefulWidget<BlogScreen> {
   @override
-  String getTitleLabel() => "My Experiences";
+  String getTitleLabel() => "My Blogs";
 
   @override
-  String get screenName => "Experiences";
+  String get screenName => "Blogs";
 
   @override
   List<BlocProvider> getListBloc(BuildContext context) => [];
@@ -39,16 +40,16 @@ class _ExperienceScreenState extends BaseStatefulWidget<ExperienceScreen> {
 
   @override
   Widget? generateSideBar() {
-    return LiquidGlassSidebar(selectedIndex: 1);
+    return LiquidGlassSidebar(selectedIndex: 4);
   }
 
   @override
   Widget? generateBottomBar() {
-    return GlassBottomBar(selectedIndex: 1);
+    return GlassBottomBar(selectedIndex: 4);
   }
 
   @override
   Widget generateBody() {
-    return ExperienceContent(scrollController: baseScrollController);
+    return BlogContent(scrollController: baseScrollController);
   }
 }

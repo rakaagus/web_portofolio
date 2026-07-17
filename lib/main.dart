@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:web_portofolio/presentation/bloc/blog/blog_screen.dart';
 import 'package:web_portofolio/presentation/bloc/education/education_screen.dart';
 import 'package:web_portofolio/presentation/bloc/experience/experience_screen.dart';
 import 'package:web_portofolio/presentation/bloc/home/home_screen.dart' show HomeScreen;
@@ -61,6 +62,9 @@ class MyPortoApp extends StatelessWidget{
           break;
         case '/projects':
           page = const ProjectScreen();
+          break;
+        case '/blogs':
+          page = const BlogScreen();
           break;
         default:
           return MaterialPageRoute(

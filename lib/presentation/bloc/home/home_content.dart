@@ -9,7 +9,6 @@ import 'package:web_portofolio/presentation/widget/global_footer.dart';
 import 'package:web_portofolio/presentation/widget/gradient_background.dart';
 import 'package:web_portofolio/presentation/widget/tech_chip.dart';
 import 'package:web_portofolio/presentation/bloc/home/widget/tech_stak_widget.dart';
-
 import 'widget/testimonial_section_widget.dart';
 
 class HomeContent extends StatefulWidget {
