@@ -6,10 +6,12 @@ import 'item_menu_data.dart';
 
 class GlassBottomBar extends StatelessWidget {
   final int selectedIndex;
+  final Function(String url) onNavigate;
 
   const GlassBottomBar({
     super.key,
     required this.selectedIndex,
+    required this.onNavigate
   });
 
   @override
@@ -36,7 +38,7 @@ class GlassBottomBar extends StatelessWidget {
                   iconData: isSelected ? entry.value['filledIcon'] : entry.value['outlineIcon'],
                   label: entry.value['label'],
                   isSelected: isSelected,
-                  onTap: () => Navigator.pushReplacementNamed(context, item['route']),
+                  onTap: () => onNavigate(item['route']),
                 );
               }).toList(),
             ),

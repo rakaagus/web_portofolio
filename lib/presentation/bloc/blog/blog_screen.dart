@@ -40,12 +40,22 @@ class _BlogScreenState extends BaseStatefulWidget<BlogScreen> {
 
   @override
   Widget? generateSideBar() {
-    return LiquidGlassSidebar(selectedIndex: 4);
+    return LiquidGlassSidebar(
+      selectedIndex: 3,
+      onNavigate: (String url) {
+        customNavigateTo(context, url);
+      },
+    );
   }
 
   @override
   Widget? generateBottomBar() {
-    return GlassBottomBar(selectedIndex: 4);
+    return GlassBottomBar(
+      selectedIndex: 3,
+      onNavigate: (String url) {
+        customNavigateTo(context, url);
+      },
+    );
   }
 
   @override

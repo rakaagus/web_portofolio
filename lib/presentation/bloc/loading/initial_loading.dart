@@ -152,12 +152,20 @@ class _PremiumLoadingWrapperState extends State<PremiumLoadingWrapper> with Tick
           ),
         ],
         Positioned.fill(
-          child: Column(
+          child: Stack(
             children: List.generate(totalBlocks, (index) {
-              return Expanded(
+              final double individualHeight = screenSize.height / totalBlocks;
+              return Positioned(
+                top: (index * individualHeight) - (index > 0 ? 1 : 0),
+                left: 0,
+                right: 0,
+                height: individualHeight + 2,
                 child: Transform.translate(
                   offset: Offset(blockOffsets[index], 0),
-                  child: Container(width: double.infinity, color: finalBgColor),
+                  child: Container(
+                    width: double.infinity,
+                    color: finalBgColor,
+                  ),
                 ),
               );
             }),

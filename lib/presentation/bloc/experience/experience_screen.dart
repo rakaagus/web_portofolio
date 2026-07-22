@@ -39,16 +39,31 @@ class _ExperienceScreenState extends BaseStatefulWidget<ExperienceScreen> {
 
   @override
   Widget? generateSideBar() {
-    return LiquidGlassSidebar(selectedIndex: 1);
+    return LiquidGlassSidebar(
+      selectedIndex: 1,
+      onNavigate: (String url) {
+        customNavigateTo(context, url);
+      },
+    );
   }
 
   @override
   Widget? generateBottomBar() {
-    return GlassBottomBar(selectedIndex: 1);
+    return GlassBottomBar(
+      selectedIndex: 1,
+      onNavigate: (String url) {
+        customNavigateTo(context, url);
+      },
+    );
   }
 
   @override
   Widget generateBody() {
-    return ExperienceContent(scrollController: baseScrollController);
+    return ExperienceContent(
+      scrollController: baseScrollController,
+      onNavigate: (String url) {
+          customNavigateTo(context, url);
+      },
+    );
   }
 }

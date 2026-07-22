@@ -15,12 +15,6 @@ const List<Map<String, dynamic>> appMenuData = [
     'label': 'Experience',
   },
   {
-    'route': '/education',
-    'outlineIcon': Icons.school_outlined,
-    'filledIcon': Icons.school_rounded,
-    'label': 'Education',
-  },
-  {
     'route': '/projects',
     'outlineIcon': Icons.rocket_launch_outlined,
     'filledIcon': Icons.rocket_launch_rounded,

@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:web_portofolio/presentation/bloc/home/widget/experience_card.dart';
-import 'package:web_portofolio/presentation/bloc/home/widget/hovered_card_widget.dart' show HoverGlassCard, HoverSolidCard;
+import 'package:web_portofolio/presentation/widget/hovered_card_widget.dart' show HoverGlassCard, HoverSolidCard;
 import 'package:web_portofolio/presentation/bloc/home/widget/project_card.dart';
 import 'package:web_portofolio/presentation/widget/global_button.dart';
 import 'package:web_portofolio/presentation/widget/global_footer.dart';
@@ -10,10 +10,12 @@ import 'package:web_portofolio/presentation/widget/gradient_background.dart';
 import 'package:web_portofolio/presentation/widget/tech_chip.dart';
 import 'package:web_portofolio/presentation/bloc/home/widget/tech_stak_widget.dart';
 import 'widget/testimonial_section_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeContent extends StatefulWidget {
   final ScrollController scrollController;
-  const HomeContent({super.key, required this.scrollController});
+  final Function(String url) onNavigate;
+  const HomeContent({super.key, required this.scrollController, required this.onNavigate});
 
   @override
   State<HomeContent> createState() => _HomeContentState();
@@ -48,6 +50,19 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       duration: const Duration(milliseconds: 750),
       curve: Curves.easeInOut,
     );
+  }
+
+  Future<void> _launchURL(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
+    } else {
+      debugPrint("Tidak dapat membuka link: $urlString");
+    }
   }
 
   @override
@@ -136,30 +151,26 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                     _buildSocialIcon(
                       icon: FontAwesomeIcons.github,
                       tooltip: "GitHub",
-                      onPressed: () {
-                        // Aksi buka GitHub
-                      },
+                      onPressed: () => _launchURL("https://github.com/rakaagus"),
                     ),
                     const SizedBox(width: 16),
                     _buildSocialIcon(
                       icon: FontAwesomeIcons.linkedin,
                       tooltip: "LinkedIn",
-                      onPressed: () {
-                        // Aksi buka LinkedIn
-                      },
+                      onPressed: () => _launchURL("https://www.linkedin.com/in/raka-agus-maulana/"),
                     ),
                     const SizedBox(width: 16),
                     _buildSocialIcon(
-                      icon: Icons.email_rounded,
-                      tooltip: "Email",
-                      onPressed: () {
-                        // Aksi buka Email
-                      },
+                      icon: FontAwesomeIcons.instagram,
+                      tooltip: "Instagram",
+                      onPressed: () => _launchURL("https://www.instagram.com/rakaagus.m/"),
                     ),
                   ],
                 ),
                 const SizedBox(height: 32),
-                GlobalButton(title: "View my work", onPressed: () {}),
+                GlobalButton(title: "View my work", onPressed: () {
+                  widget.onNavigate('/experience');
+                }),
               ],
             ),
           ),
@@ -234,7 +245,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
             ),
           ),
           const SizedBox(height: 24),
-          GlobalButton(title: "Download Resume", onPressed: () {}),
+          GlobalButton(title: "Download Resume", icon: Icons.file_download_outlined,onPressed: () {}),
         ],
       ),
     );
@@ -274,6 +285,128 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       ),
     );
 
+    final educationCard = HoverSolidCard(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "EDUCATION",
+                style: TextStyle(
+                  letterSpacing: 2,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSurface.withOpacity(0.5),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Nurul Fikri College of Technology",
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                  height: 1.3,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                "S.Kom (Bachelor of Computer Science)",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: colorScheme.primary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "2021 - Feb 2025",
+                style: TextStyle(
+                  fontSize: 13,
+                  color: colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+              Text(
+                "GPA: 3.71",
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    final blogsCard = MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {
+          widget.onNavigate('/blogs');
+        },
+        child: HoverSolidCard(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "BLOGS",
+                        style: TextStyle(
+                          letterSpacing: 2,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.onSurface.withOpacity(0.5),
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_outward_rounded, // Arrow menyerong ke kanan atas
+                        color: colorScheme.primary,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Read My Articles",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Sharing my thoughts on technology, mobile development, and software engineering.",
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.5,
+                      color: colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
     final techStackCard = HoverTechStackCard(
       colorScheme: colorScheme,
       isDark: Theme.of(context).brightness == Brightness.dark,
@@ -310,6 +443,8 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                   ),
                 ),
                 const SizedBox(height: 60),
+
+                // ================= TAMPILAN MOBILE =================
                 if (isMobile)
                   Column(
                     children: [
@@ -317,9 +452,15 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                       const SizedBox(height: 24),
                       bioCard,
                       const SizedBox(height: 24),
+                      educationCard, // Tambah Education di Mobile
+                      const SizedBox(height: 24),
+                      blogsCard,     // Tambah Blogs di Mobile
+                      const SizedBox(height: 24),
                       techStackCard,
                     ],
                   )
+
+                // ================= TAMPILAN DESKTOP =================
                 else
                   IntrinsicHeight(
                     child: Row(
@@ -337,6 +478,21 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                             children: [
                               Expanded(
                                 child: bioCard,
+                              ),
+                              const SizedBox(height: 24),
+                              IntrinsicHeight(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Expanded(
+                                      child: educationCard,
+                                    ),
+                                    const SizedBox(width: 24),
+                                    Expanded(
+                                      child: blogsCard,
+                                    ),
+                                  ],
+                                ),
                               ),
                               const SizedBox(height: 24),
                               techStackCard,
@@ -368,7 +524,6 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Column(
             children: [
-              // Header Section
               Text(
                 "Experience",
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
@@ -408,7 +563,9 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                 ],
               ),
               const SizedBox(height: 50),
-              GlobalButton(title: "View full experience", onPressed: () {})
+              GlobalButton(title: "View full experience", onPressed: () {
+                widget.onNavigate('/experience');
+              })
             ],
           ),
         ),
@@ -416,7 +573,6 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     );
   }
 
-// 1. KONTEN PROJECTS
   Widget _buildSectionProjectsContent(ColorScheme colorScheme, bool isMobile, double screenWidth) {
     return Center(
       child: Container(
@@ -478,14 +634,15 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
               ],
             ),
             const SizedBox(height: 60),
-            GlobalButton(title: "View all projects", onPressed: () {})
+            GlobalButton(title: "View all projects", onPressed: () {
+              widget.onNavigate('/projects');
+            })
           ],
         ),
       ),
     );
   }
 
-// 2. KONTEN GET IN TOUCH
   Widget _buildSectionGetInTouchContent(ColorScheme colorScheme, bool isMobile) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 

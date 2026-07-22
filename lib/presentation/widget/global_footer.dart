@@ -98,6 +98,7 @@ class GlobalFooter extends StatelessWidget {
               color: (isDark ? Colors.white : Colors.black).withOpacity(0.4),
             ),
           ),
+          if(isMobile) const SizedBox(height: 60),
         ],
       ),
     );
