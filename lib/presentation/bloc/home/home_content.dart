@@ -2,13 +2,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:web_portofolio/presentation/bloc/home/widget/experience_card.dart';
+import 'package:web_portofolio/presentation/bloc/home/widget/tech_stak_widget.dart';
+import 'package:web_portofolio/presentation/widget/global_project_card.dart';
 import 'package:web_portofolio/presentation/widget/hovered_card_widget.dart' show HoverGlassCard, HoverSolidCard;
-import 'package:web_portofolio/presentation/bloc/home/widget/project_card.dart';
 import 'package:web_portofolio/presentation/widget/global_button.dart';
 import 'package:web_portofolio/presentation/widget/global_footer.dart';
 import 'package:web_portofolio/presentation/widget/gradient_background.dart';
 import 'package:web_portofolio/presentation/widget/tech_chip.dart';
-import 'package:web_portofolio/presentation/bloc/home/widget/tech_stak_widget.dart';
 import 'widget/testimonial_section_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -204,49 +204,63 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   }
 
   Widget _buildSectionAbout(ColorScheme colorScheme, bool isMobile, double screenWidth) {
+    final bool isTablet = screenWidth >= 650 && screenWidth < 1100;
+
+    // --- PROFILE CARD (VERTIKAL & SIMETRIS UNTUK SEMUA LAYAR) ---
     final profileCard = HoverSolidCard(
-      padding: const EdgeInsets.all(32),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            height: 320,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              image: const DecorationImage(
-                image: AssetImage('assets/profile_illustration.png'),
-                fit: BoxFit.contain,
+      padding: EdgeInsets.all(isMobile ? 24 : 40),
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              height: isMobile ? 260 : 320, // Ukuran gambar tetap besar & jelas
+              width: isMobile ? 260 : 320,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                image: const DecorationImage(
+                  image: AssetImage('assets/profile_illustration.png'),
+                  fit: BoxFit.contain,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 25,
+                    offset: const Offset(0, 12),
+                  )
+                ],
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 30,
-                  offset: const Offset(0, 15),
-                )
-              ],
             ),
-          ),
-          const SizedBox(height: 40),
-          Text(
-            "Raka Agus",
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
+            const SizedBox(height: 32),
+            Text(
+              "Raka Agus",
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            "MOBILE & FULLSTACK DEV",
-            style: TextStyle(
-              letterSpacing: 2,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: colorScheme.onSurface,
+            const SizedBox(height: 8),
+            Text(
+              "MOBILE & FULLSTACK DEV",
+              style: TextStyle(
+                letterSpacing: 2,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
-          const SizedBox(height: 24),
-          GlobalButton(title: "Download Resume", icon: Icons.file_download_outlined,onPressed: () {}),
-        ],
+            const SizedBox(height: 24),
+            GlobalButton(
+              title: "Download Resume",
+              icon: Icons.file_download_outlined,
+              onPressed: () {},
+            ),
+          ],
+        ),
       ),
     );
 
@@ -376,7 +390,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                         ),
                       ),
                       Icon(
-                        Icons.arrow_outward_rounded, // Arrow menyerong ke kanan atas
+                        Icons.arrow_outward_rounded,
                         color: colorScheme.primary,
                         size: 20,
                       ),
@@ -423,7 +437,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
           Padding(
             padding: EdgeInsets.symmetric(
               vertical: 120,
-              horizontal: isMobile ? 24 : screenWidth * 0.1,
+              horizontal: isMobile ? 24 : (isTablet ? 40 : screenWidth * 0.1),
             ),
             child: Column(
               children: [
@@ -444,7 +458,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                 ),
                 const SizedBox(height: 60),
 
-                // ================= TAMPILAN MOBILE =================
+                // ================= 1. TAMPILAN MOBILE =================
                 if (isMobile)
                   Column(
                     children: [
@@ -452,15 +466,38 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                       const SizedBox(height: 24),
                       bioCard,
                       const SizedBox(height: 24),
-                      educationCard, // Tambah Education di Mobile
+                      educationCard,
                       const SizedBox(height: 24),
-                      blogsCard,     // Tambah Blogs di Mobile
+                      blogsCard,
                       const SizedBox(height: 24),
                       techStackCard,
                     ],
                   )
 
-                // ================= TAMPILAN DESKTOP =================
+                // ================= 2. TAMPILAN TABLET (iPad Pro 1024px) =================
+                else if (isTablet)
+                  Column(
+                    children: [
+                      profileCard, // Card Profile Hero Vertikal di paling atas
+                      const SizedBox(height: 24),
+                      bioCard,
+                      const SizedBox(height: 24),
+                      IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(child: educationCard),
+                            const SizedBox(width: 24),
+                            Expanded(child: blogsCard),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      techStackCard,
+                    ],
+                  )
+
+                // ================= 3. TAMPILAN DESKTOP (>= 1100px) =================
                 else
                   IntrinsicHeight(
                     child: Row(
@@ -476,21 +513,15 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Expanded(
-                                child: bioCard,
-                              ),
+                              Expanded(child: bioCard),
                               const SizedBox(height: 24),
                               IntrinsicHeight(
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    Expanded(
-                                      child: educationCard,
-                                    ),
+                                    Expanded(child: educationCard),
                                     const SizedBox(width: 24),
-                                    Expanded(
-                                      child: blogsCard,
-                                    ),
+                                    Expanded(child: blogsCard),
                                   ],
                                 ),
                               ),
@@ -610,6 +641,8 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                     TechChip(label: "NFC", color: Colors.teal),
                     TechChip(label: "Firebase", color: Colors.amber),
                   ],
+                  category: 'Web',
+                  demoLinkText: "",
                 ),
                 ProjectCard(
                   imagePath: 'assets/project_booking.png',
@@ -620,6 +653,8 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                     TechChip(label: "Dart", color: Colors.blue),
                     TechChip(label: "GetX", color: Colors.purple),
                   ],
+                  category: "Mobile",
+                  demoLinkText: "",
                 ),
                 ProjectCard(
                   imagePath: 'assets/project_pos.png',
@@ -630,6 +665,8 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                     TechChip(label: "Kotlin", color: Colors.orange),
                     TechChip(label: "Room DB", color: Colors.blueGrey),
                   ],
+                  category: 'Mobile',
+                  demoLinkText: "",
                 ),
               ],
             ),

@@ -59,6 +59,11 @@ class _ProjectScreenState extends BaseStatefulWidget<ProjectScreen> {
 
   @override
   Widget generateBody() {
-    return ProjectContent(scrollController: baseScrollController);
+    return ProjectContent(
+      scrollController: baseScrollController,
+      onNavigate: (String url) {
+        customNavigateTo(context, url);
+      },
+    );
   }
 }

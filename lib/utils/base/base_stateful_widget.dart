@@ -289,12 +289,15 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
   Widget _buildBackToTopButton(bool isDesktop) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final bool isHiding = _isInitialLoading || _isPageTransitionLoading || _isExitingPage;
+    final bool isVisible = showBackToTop && !isHiding;
+
     return AnimatedScale(
       duration: const Duration(milliseconds: 300),
-      scale: showBackToTop ? 1.0 : 0.0,
+      scale: isVisible ? 1.0 : 0.0, // 👈 Gunakan isVisible
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 300),
-        opacity: showBackToTop ? 1.0 : 0.0,
+        opacity: isVisible ? 1.0 : 0.0, // 👈 Gunakan isVisible
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
@@ -308,9 +311,11 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
           ),
           child: GestureDetector(
             onTap: () {
-              baseScrollController.animateTo(0,
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut);
+              baseScrollController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+              );
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
@@ -351,6 +356,7 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
   void customNavigateTo(BuildContext context, String url) {
     setState(() {
       _isExitingPage = true;
+      showBackToTop = false;
     });
 
     Future.delayed(const Duration(milliseconds: 500), () {
