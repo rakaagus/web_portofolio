@@ -39,16 +39,31 @@ class _ProjectScreenState extends BaseStatefulWidget<ProjectScreen> {
 
   @override
   Widget? generateSideBar() {
-    return LiquidGlassSidebar(selectedIndex: 3);
+    return LiquidGlassSidebar(
+      selectedIndex: 2,
+      onNavigate: (String url) {
+          customNavigateTo(context, url);
+      },
+    );
   }
 
   @override
   Widget? generateBottomBar() {
-    return GlassBottomBar(selectedIndex: 3);
+    return GlassBottomBar(
+      selectedIndex: 2,
+      onNavigate: (String url) {
+        customNavigateTo(context, url);
+      },
+    );
   }
 
   @override
   Widget generateBody() {
-    return ProjectContent(scrollController: baseScrollController);
+    return ProjectContent(
+      scrollController: baseScrollController,
+      onNavigate: (String url) {
+        customNavigateTo(context, url);
+      },
+    );
   }
 }

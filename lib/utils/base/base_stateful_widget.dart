@@ -172,7 +172,7 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final bool isHiding = _isInitialLoading || _isPageTransitionLoading;
+    final bool isHiding = _isInitialLoading || _isPageTransitionLoading || _isExitingPage;
 
     double topPosition = 20;
     if (isHiding) {
@@ -182,13 +182,13 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
     }
 
     return AnimatedPositioned(
-      duration: const Duration(milliseconds: 650),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeOutBack,
       top: topPosition,
       left: isDesktop ? 20 : 15,
       right: isDesktop ? (generateSideBar() != null ? 100 : 20) : 15,
       child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 400),
+        duration: const Duration(milliseconds: 350),
         opacity: isHiding ? 0.0 : 1.0,
         child: Container(
           alignment: Alignment.center,
@@ -244,16 +244,16 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
     final sidebar = generateSideBar();
     if (sidebar == null || !isDesktop) return const SizedBox.shrink();
 
-    final bool isHiding = _isInitialLoading || _isPageTransitionLoading;
+    final bool isHiding = _isInitialLoading || _isPageTransitionLoading || _isExitingPage;
 
     return AnimatedPositioned(
-      duration: const Duration(milliseconds: 650),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeOutBack,
       right: isHiding ? -120 : 0,
       top: 0,
       bottom: 0,
       child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 450),
+        duration: const Duration(milliseconds: 350),
         opacity: isHiding ? 0.0 : 1.0,
         child: sidebar,
       ),
@@ -264,7 +264,7 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
     final bottomBar = generateBottomBar();
     if (bottomBar == null || isDesktop) return const SizedBox.shrink();
 
-    final bool isHiding = _isInitialLoading || _isPageTransitionLoading;
+    final bool isHiding = _isInitialLoading || _isPageTransitionLoading || _isExitingPage;
 
     return Positioned(
       left: 0,
@@ -272,10 +272,10 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
       bottom: 0,
       child: AnimatedSlide(
         offset: isHiding ? const Offset(0, 1.5) : const Offset(0, 0),
-        duration: const Duration(milliseconds: 650),
+        duration: const Duration(milliseconds: 500),
         curve: Curves.easeOutBack,
         child: AnimatedOpacity(
-          duration: const Duration(milliseconds: 400),
+          duration: const Duration(milliseconds: 350),
           opacity: isHiding ? 0.0 : 1.0,
           child: SafeArea(
             top: false,
@@ -289,12 +289,15 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
   Widget _buildBackToTopButton(bool isDesktop) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final bool isHiding = _isInitialLoading || _isPageTransitionLoading || _isExitingPage;
+    final bool isVisible = showBackToTop && !isHiding;
+
     return AnimatedScale(
       duration: const Duration(milliseconds: 300),
-      scale: showBackToTop ? 1.0 : 0.0,
+      scale: isVisible ? 1.0 : 0.0, // 👈 Gunakan isVisible
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 300),
-        opacity: showBackToTop ? 1.0 : 0.0,
+        opacity: isVisible ? 1.0 : 0.0, // 👈 Gunakan isVisible
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
@@ -308,9 +311,11 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
           ),
           child: GestureDetector(
             onTap: () {
-              baseScrollController.animateTo(0,
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut);
+              baseScrollController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+              );
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
@@ -348,9 +353,10 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
     );
   }
 
-  void customNavigateTo(BuildContext context, String url, {Object? arguments}) {
+  void customNavigateTo(BuildContext context, String url) {
     setState(() {
       _isExitingPage = true;
+      showBackToTop = false;
     });
 
     Future.delayed(const Duration(milliseconds: 500), () {
@@ -358,7 +364,6 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
       Navigator.pushNamed(
         context,
         url,
-        arguments: arguments,
       ).then((_) {
         if (mounted) {
           setState(() {

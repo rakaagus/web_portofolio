@@ -40,16 +40,31 @@ class _HomeScreenState extends BaseStatefulWidget<HomeScreen> {
 
   @override
   Widget? generateSideBar() {
-    return LiquidGlassSidebar(selectedIndex: 0);
+    return LiquidGlassSidebar(
+      selectedIndex: 0,
+      onNavigate: (String url) {
+        customNavigateTo(context, url);
+      },
+    );
   }
 
   @override
   Widget? generateBottomBar() {
-    return GlassBottomBar(selectedIndex: 0);
+    return GlassBottomBar(
+      selectedIndex: 0,
+      onNavigate: (String url) {
+        customNavigateTo(context, url);
+      },
+    );
   }
 
   @override
   Widget generateBody() {
-    return HomeContent(scrollController: baseScrollController);
+    return HomeContent(
+      scrollController: baseScrollController,
+      onNavigate: (String url) {
+          customNavigateTo(context, url);
+      },
+    );
   }
 }

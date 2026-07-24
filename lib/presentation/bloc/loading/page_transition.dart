@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PremiumPageTransitionOverlay extends StatefulWidget {
-  final bool isLoading; // Mengikat variabel _isPageTransitionLoading dari induk
-  final Color? color;   // Warna balok (opsional, otomatis menyesuaikan tema jika kosong)
+  final bool isLoading;
+  final Color? color;
 
   const PremiumPageTransitionOverlay({
     super.key,
@@ -19,22 +19,20 @@ class _PremiumPageTransitionOverlayState extends State<PremiumPageTransitionOver
 
   late AnimationController _slideInController;
   late AnimationController _slideOutController;
-  bool _isOverlayActive = false; // Flag untuk merender widget atau menghemat memori
+  bool _isOverlayActive = false;
 
   @override
   void initState() {
     super.initState();
 
-    // Controller Fase Masuk (0.0 -> 1.0)
     _slideInController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 650), // Durasi menutup layar
+      duration: const Duration(milliseconds: 500),
     );
 
-    // Controller Fase Keluar (0.0 -> 1.0)
     _slideOutController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 650), // Durasi membuka tirai
+      duration: const Duration(milliseconds: 500),
     );
 
     _slideInController.addListener(() => setState(() {}));
@@ -42,17 +40,15 @@ class _PremiumPageTransitionOverlayState extends State<PremiumPageTransitionOver
 
     _slideOutController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        // Jika tirai sudah terbuka sepenuhnya, nonaktifkan render overlay
         setState(() {
           _isOverlayActive = false;
         });
       }
     });
 
-    // Jalankan langsung jika saat widget dipasang statusnya sedang memuat
     if (widget.isLoading) {
       _isOverlayActive = true;
-      _slideInController.forward();
+      _slideInController.value = 1.0;
     }
   }
 
@@ -114,7 +110,6 @@ class _PremiumPageTransitionOverlayState extends State<PremiumPageTransitionOver
       double slideOffset = 0.0;
 
       if (widget.isLoading) {
-        // [FASE 1] Menutup Layar: Balok masuk berurutan dari KIRI ke KANAN
         final double bp = _getIntervalProgress(
           pIn,
           i * 0.12,
@@ -123,7 +118,6 @@ class _PremiumPageTransitionOverlayState extends State<PremiumPageTransitionOver
         );
         slideOffset = -(1.0 - bp) * width;
       } else {
-        // [FASE 2] Menyingkap Layar: Balok keluar berurutan dari KIRI ke KANAN
         final double ep = _getIntervalProgress(
           pOut,
           i * 0.12,
@@ -135,12 +129,17 @@ class _PremiumPageTransitionOverlayState extends State<PremiumPageTransitionOver
       blockOffsets.add(slideOffset);
     }
 
-    // AbsorbPointer memblokir semua interaksi klik user selama animasi berjalan
+    final double individualHeight = screenSize.height / totalBlocks;
+
     return AbsorbPointer(
       absorbing: true,
-      child: Column(
+      child: Stack(
         children: List.generate(totalBlocks, (index) {
-          return Expanded(
+          return Positioned(
+            top: (index * individualHeight) - (index > 0 ? 1 : 0),
+            left: 0,
+            right: 0,
+            height: individualHeight + 2,
             child: Transform.translate(
               offset: Offset(blockOffsets[index], 0),
               child: Container(

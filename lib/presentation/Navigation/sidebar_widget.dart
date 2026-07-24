@@ -6,10 +6,12 @@ import 'item_menu_data.dart';
 
 class LiquidGlassSidebar extends StatefulWidget {
   final int selectedIndex;
+  final Function(String url) onNavigate;
 
   const LiquidGlassSidebar({
     super.key,
     required this.selectedIndex,
+    required this.onNavigate
   });
 
   @override
@@ -47,7 +49,7 @@ class _LiquidGlassSidebarState extends State<LiquidGlassSidebar> {
                   label: entry.value['label'],
                   isSelected: isSelected,
                   isSidebarHovered: _isSidebarHovered,
-                  onTap: () => Navigator.pushReplacementNamed(context, item['route']),
+                  onTap: () => widget.onNavigate(item['route']),
                 );
               }).toList(),
             ),
