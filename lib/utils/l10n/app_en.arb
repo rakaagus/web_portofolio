@@ -1,7 +1,106 @@
 {
-  "helloIntro": "Hello, I'm",
+  "helloIntro": "Hello, I'm ",
+  "myName": "Raka Agus",
   "heroDescription": "A passionate software engineer specializing in creating user-friendly mobile and desktop solutions.",
   "viewWorkBtn": "View my work",
   "aboutTitle": "About Me",
-  "downloadResume": "Download Resume"
+  "aboutDesc": "Get to know a bit about my background and skills",
+  "roleMobileEngineer": "MOBILE ENGINEER",
+  "downloadResume": "Download Resume",
+  "welcome": "WELCOME",
+  "bioText1": "Experienced Software Engineer with expertise in designing and building applications used by thousands of users. My primary focus has been on delivering high-performance, user-friendly solutions.",
+  "bioText2": "My technical expertise includes Kotlin, Android, MVVM for mobile engineering, and Flutter, Dart, Bloc for cross-platform development.",
+  "educationTag": "EDUCATION",
+  "schoolName": "Nurul Fikri College of Technology",
+  "degreeName": "S.Kom (Bachelor of Computer Science)",
+  "educationPeriod": "2021 - Feb 2025",
+  "educationGpa": "GPA: 3.71",
+  "blogsTag": "BLOGS",
+  "blogsTitle": "Read My Articles",
+  "blogsDesc": "Sharing my thoughts on technology, mobile development, and software engineering.",
+  "testimoniTag" : "Testimonials",
+  "testimoniDesc": "What colleagues and clients say about our collaboration",
+  "experienceTitle": "Experience",
+  "experienceSubTitle": "A glimpse into my professional journey",
+  "experienceSubTitlePage": "My professional journey as a software developer.",
+  "exp1Role": "Software Engineer (Mobile Specialist)",
+  "exp1Period": "February 2025 - Present",
+  "exp1Desc": "Developing and maintaining smart parking solutions using Flutter and Android. Implementing NFC payment systems and optimizing mobile app performance for thousands of daily users.",
+  "exp2Role": "Junior Mobile Developer",
+  "exp2Company": "Previous Company",
+  "exp2Period": "2023 - 2025",
+  "exp2Desc": "Collaborated with cross-functional teams to build robust mobile applications. Focused on clean code architecture and responsive UI design using Kotlin and Dart.",
+  "viewFullExperienceBtn": "View full experience",
+  "projectsTitle": "Projects",
+  "projectsSubTitle": "Check out some of my recent work",
+  "proj1Title": "Smart Parking System",
+  "proj1Desc": "A comprehensive parking solution with NFC integration, real-time monitoring, and seamless mobile payments.",
+  "proj2Title": "Wedding Reservation Platform",
+  "proj2Desc": "Modular wedding invitation and attendance reservation system built for high scalability and customization.",
+  "proj3Title": "Smart POS Handheld",
+  "proj3Desc": "Android-based Point of Sale system optimized for handheld devices with thermal printer and e-money support.",
+  "viewAllProjectsBtn": "View all projects",
+  "getInTouchTitle": "Get in Touch",
+  "getInTouchSubTitle": "Have a project in mind? Let's work together.",
+  "fieldLabelName": "Name",
+  "fieldHintName": "Your name",
+  "fieldLabelEmail": "Email",
+  "fieldHintEmail": "Your email",
+  "fieldLabelMessage": "Message",
+  "fieldHintMessage": "Your message",
+  "sendMessageBtn": "Send Message",
+  "footerDesc": "A showcase of my skills, projects, and professional journey as software engineer.",
+  "appBarTitleProjects": "My Projects",
+  "projectsTitleScreen": "Projects",
+  "projectsSubtitle": "Check out some of my recent work",
+  "categoryAll": "All",
+  "categoryMobile": "Mobile",
+  "categoryWeb": "Web",
+  "categoryDesktop": "Desktop",
+  "viewProject": "View project",
+  "pageIndicator": "Page {current} of {total}",
+  "@pageIndicator": {
+    "description": "Page indicator for pagination",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "ctaTitle": "Interested in collaborating?",
+  "ctaSubtitle": "I'm always open to discussing product design work or partnership opportunities.",
+  "ctaButton": "Start a Conversation",
+  "footerPortfolioTitle": "Portofolio",
+  "footerPortfolioDescription": "A showcase of my skills, projects, and professional journey as mobile engineer.",
+  "footerLinksTitle": "Links",
+  "footerLinkExperience": "Experience",
+  "footerLinkProjects": "Projects",
+  "footerLinkBlogs": "Blogs",
+  "footerConnectTitle": "Connect",
+  "footerCopyright": "© 2026 Raka Agus. All rights reserved.",
+  "ctaProjectEmptyDesc": "There are no projects available in the {category} category yet.",
+  "@ctaProjectEmptyDesc": {
+    "description": "catergory empty",
+    "placeholders": {
+      "category": {
+          "type": "String"
+      }
+    }
+  },
+  "ctaProjectEmptyBtn": "Show All Projects",
+  "postTitle": "Posts",
+  "postSubTitle": "Thoughts, notes, and things I find worth sharing.",
+  "emptyData": "No {page} Found!",
+  "@emptyData": {
+    "description": "empty data",
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "emptyBlogSub": "There are no blog available in here yet."
 }
