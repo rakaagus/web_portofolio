@@ -28,13 +28,7 @@ class _ExperienceScreenState extends BaseStatefulWidget<ExperienceScreen> {
 
   @override
   Widget? getRightAction() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return IconButton(
-      icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
-      onPressed: () {
-
-      },
-    );
+    return buildDefaultRightActions(context);
   }
 
   @override

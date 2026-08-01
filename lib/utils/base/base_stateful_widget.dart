@@ -1,11 +1,12 @@
 import 'dart:ui';
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_portofolio/presentation/bloc/loading/initial_loading.dart';
 import 'package:web_portofolio/presentation/bloc/loading/page_transition.dart';
+import 'package:web_portofolio/utils/enum/locale_cubit.dart';
+import 'package:web_portofolio/utils/enum/theme_cubit.dart';
 
 abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -111,8 +112,102 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
   Widget? generateBottomBar() => null;
   Widget? generateSideBar() => null;
   String getTitleLabel() => "";
-  Widget? getRightAction() => null;
+  Widget? getRightAction() => buildDefaultRightActions(context);
+
   Widget? getLeftIcon() => null;
+
+  void onLanguageToggle() {
+    final currentLocale = Localizations.localeOf(context);
+    context.read<LocaleCubit>().toggleLocale(currentLocale);
+  }
+
+  void onThemeToggle() {
+    final currentBrightness = Theme.of(context).brightness;
+    context.read<ThemeCubit>().toggleTheme(currentBrightness);
+  }
+
+  Widget buildDefaultRightActions(BuildContext context) {
+    final colorTheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final currentLocale = Localizations.localeOf(context);
+    final isIndonesian = currentLocale.languageCode == 'id';
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildGlassHeaderButton(
+          tooltip: isIndonesian ? 'Switch to English' : 'Ubah ke Bahasa Indonesia',
+          onPressed: onLanguageToggle,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.language_rounded,
+                size: 16,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+              const SizedBox(width: 5),
+              Text(
+                isIndonesian ? 'ID' : 'EN',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(width: 8),
+        _buildGlassHeaderButton(
+          tooltip: isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
+          onPressed: onThemeToggle,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, anim) => RotationTransition(
+              turns: anim,
+              child: ScaleTransition(scale: anim, child: child),
+            ),
+            child: Icon(
+              isDark ? Icons.wb_sunny_rounded : Icons.dark_mode,
+              key: ValueKey<bool>(isDark),
+              size: 18,
+              color: colorTheme.onSurface,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGlassHeaderButton({
+    required Widget child,
+    required VoidCallback onPressed,
+    required String tooltip,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorTheme = Theme.of(context).colorScheme;
+
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            decoration: BoxDecoration(
+              color: colorTheme.onSurface.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -199,9 +294,9 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
               child: Container(
                 height: 60,
                 constraints: const BoxConstraints(maxWidth: 1600),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  color: (isDark ? Colors.black : Colors.white).withOpacity(0.1),
+                  color: (isDark ? Colors.black : Colors.white).withOpacity(0.15),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.4),
@@ -294,10 +389,10 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
 
     return AnimatedScale(
       duration: const Duration(milliseconds: 300),
-      scale: isVisible ? 1.0 : 0.0, // 👈 Gunakan isVisible
+      scale: isVisible ? 1.0 : 0.0,
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 300),
-        opacity: isVisible ? 1.0 : 0.0, // 👈 Gunakan isVisible
+        opacity: isVisible ? 1.0 : 0.0,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),

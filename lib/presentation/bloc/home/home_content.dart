@@ -9,8 +9,10 @@ import 'package:web_portofolio/presentation/widget/global_button.dart';
 import 'package:web_portofolio/presentation/widget/global_footer.dart';
 import 'package:web_portofolio/presentation/widget/gradient_background.dart';
 import 'package:web_portofolio/presentation/widget/tech_chip.dart';
+import 'package:web_portofolio/utils/color_theme.dart';
 import 'widget/testimonial_section_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeContent extends StatefulWidget {
   final ScrollController scrollController;
@@ -79,7 +81,11 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
         _buildSectionAbout(colorScheme, isMobile, screenWidth),
         _buildSectionExperience(colorScheme, isMobile, screenWidth),
         _wrapThreeSectionContent(colorScheme, isMobile, screenWidth),
-        const GlobalFooter()
+        GlobalFooter(
+          onNavigate: (String url) {
+            widget.onNavigate(url);
+          },
+        )
       ],
     );
   }
@@ -105,7 +111,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                         colors: [Colors.black, Color(0xFF5EEAD4)],
                       ).createShader(Offset.zero & bounds.size),
                       child: Text(
-                        "Hello, I'm ",
+                        AppLocalizations.of(context)!.helloIntro,
                         style: Theme.of(context).textTheme.displayLarge?.copyWith(
                           fontSize: 56,
                           fontWeight: FontWeight.bold,
@@ -122,7 +128,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                           tileMode: TileMode.clamp
                       ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
                       child: Text(
-                        "Raka Agus",
+                        AppLocalizations.of(context)!.myName,
                         style: Theme.of(context).textTheme.displayLarge?.copyWith(
                           fontSize: 56,
                           fontWeight: FontWeight.bold,
@@ -136,7 +142,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 600),
                   child: Text(
-                    "A passionate software engineer specializing in creating user-friendly mobile and desktop solutions that meet both user needs and business objectives.",
+                    AppLocalizations.of(context)!.heroDescription,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: colorScheme.onSurface.withOpacity(0.7),
@@ -168,7 +174,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                   ],
                 ),
                 const SizedBox(height: 32),
-                GlobalButton(title: "View my work", onPressed: () {
+                GlobalButton(title: AppLocalizations.of(context)!.viewWorkBtn, onPressed: () {
                   widget.onNavigate('/experience');
                 }),
               ],
@@ -191,7 +197,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                     padding: const EdgeInsets.all(8.0),
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      color: colorScheme.onSurface.withOpacity(0.5),
+                      color: colorScheme.onSurface,
                       size: 40,
                     ),
                   ),
@@ -205,8 +211,6 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
 
   Widget _buildSectionAbout(ColorScheme colorScheme, bool isMobile, double screenWidth) {
     final bool isTablet = screenWidth >= 650 && screenWidth < 1100;
-
-    // --- PROFILE CARD (VERTIKAL & SIMETRIS UNTUK SEMUA LAYAR) ---
     final profileCard = HoverSolidCard(
       padding: EdgeInsets.all(isMobile ? 24 : 40),
       child: SizedBox(
@@ -216,12 +220,12 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              height: isMobile ? 260 : 320, // Ukuran gambar tetap besar & jelas
+              height: isMobile ? 260 : 320,
               width: isMobile ? 260 : 320,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 image: const DecorationImage(
-                  image: AssetImage('assets/profile_illustration.png'),
+                  image: AssetImage('assets/images/profile_image.jpeg'),
                   fit: BoxFit.contain,
                 ),
                 boxShadow: [
@@ -244,7 +248,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
             ),
             const SizedBox(height: 8),
             Text(
-              "MOBILE & FULLSTACK DEV",
+              "MOBILE ENGINEER",
               style: TextStyle(
                 letterSpacing: 2,
                 fontSize: 12,
@@ -255,7 +259,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
             ),
             const SizedBox(height: 24),
             GlobalButton(
-              title: "Download Resume",
+              title: AppLocalizations.of(context)!.downloadResume,
               icon: Icons.file_download_outlined,
               onPressed: () {},
             ),
@@ -271,7 +275,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "WELCOME",
+            AppLocalizations.of(context)!.welcome,
             style: TextStyle(
               letterSpacing: 2,
               fontSize: 12,
@@ -281,7 +285,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
           ),
           const SizedBox(height: 16),
           Text(
-            "Experienced Software Engineer with expertise in designing and building applications used by thousands of users. My primary focus has been on delivering high-performance, user-friendly solutions.",
+            AppLocalizations.of(context)!.bioText1,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               height: 1.8,
               color: colorScheme.onSurface,
@@ -289,7 +293,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
           ),
           const SizedBox(height: 16),
           Text(
-            "My technical expertise includes Kotlin, Android, MVVM for mobile engineering, and Flutter, Dart, Bloc for cross-platform development.",
+            AppLocalizations.of(context)!.bioText2,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               height: 1.8,
               color: colorScheme.onSurface,
@@ -309,7 +313,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "EDUCATION",
+                AppLocalizations.of(context)!.educationTag,
                 style: TextStyle(
                   letterSpacing: 2,
                   fontSize: 12,
@@ -319,7 +323,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
               ),
               const SizedBox(height: 16),
               Text(
-                "Nurul Fikri College of Technology",
+                AppLocalizations.of(context)!.schoolName,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onSurface,
@@ -328,7 +332,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
               ),
               const SizedBox(height: 6),
               Text(
-                "S.Kom (Bachelor of Computer Science)",
+                AppLocalizations.of(context)!.degreeName,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
@@ -349,7 +353,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                 ),
               ),
               Text(
-                "GPA: 3.71",
+                AppLocalizations.of(context)!.educationGpa,
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
@@ -381,7 +385,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "BLOGS",
+                        AppLocalizations.of(context)!.blogsTag,
                         style: TextStyle(
                           letterSpacing: 2,
                           fontSize: 12,
@@ -398,7 +402,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "Read My Articles",
+                    AppLocalizations.of(context)!.blogsTitle,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colorScheme.onSurface,
@@ -406,7 +410,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "Sharing my thoughts on technology, mobile development, and software engineering.",
+                    AppLocalizations.of(context)!.blogsDesc,
                     style: TextStyle(
                       fontSize: 13,
                       height: 1.5,
@@ -442,7 +446,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
             child: Column(
               children: [
                 Text(
-                  "About Me",
+                  AppLocalizations.of(context)!.aboutTitle,
                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
@@ -451,14 +455,12 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  "Get to know a bit about my background and skills",
+                  AppLocalizations.of(context)!.aboutDesc,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 60),
-
-                // ================= 1. TAMPILAN MOBILE =================
                 if (isMobile)
                   Column(
                     children: [
@@ -473,12 +475,10 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                       techStackCard,
                     ],
                   )
-
-                // ================= 2. TAMPILAN TABLET (iPad Pro 1024px) =================
                 else if (isTablet)
                   Column(
                     children: [
-                      profileCard, // Card Profile Hero Vertikal di paling atas
+                      profileCard,
                       const SizedBox(height: 24),
                       bioCard,
                       const SizedBox(height: 24),
@@ -496,8 +496,6 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                       techStackCard,
                     ],
                   )
-
-                // ================= 3. TAMPILAN DESKTOP (>= 1100px) =================
                 else
                   IntrinsicHeight(
                     child: Row(
@@ -556,7 +554,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
           child: Column(
             children: [
               Text(
-                "Experience",
+                AppLocalizations.of(context)!.experienceTitle,
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
@@ -564,7 +562,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
               ),
               const SizedBox(height: 12),
               Text(
-                "A glimpse into my professional journey",
+                AppLocalizations.of(context)!.experienceSubTitle,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 60),
@@ -574,9 +572,9 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                     isDark: isDark,
                     isMobile: isMobile,
                     logo: Icons.local_parking_rounded,
-                    role: "Software Engineer (Mobile Specialist)",
+                    role: "Mobile Developer",
                     company: "Soul Parking",
-                    period: "Februari 2025 - Present",
+                    period: "February 2025 - Present",
                     description: "Developing and maintaining smart parking solutions using Flutter and Android. Implementing NFC payment systems and optimizing mobile app performance for thousands of daily users.",
                     color: Colors.blue,
                   ),
@@ -594,7 +592,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                 ],
               ),
               const SizedBox(height: 50),
-              GlobalButton(title: "View full experience", onPressed: () {
+              GlobalButton(title: AppLocalizations.of(context)!.viewFullExperienceBtn, onPressed: () {
                 widget.onNavigate('/experience');
               })
             ],
@@ -611,7 +609,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
         child: Column(
           children: [
             Text(
-              "Projects",
+              AppLocalizations.of(context)!.projectsTitle,
               style: Theme.of(context).textTheme.displayLarge?.copyWith(
                 fontSize: 40,
                 fontWeight: FontWeight.bold,
@@ -620,7 +618,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
             ),
             const SizedBox(height: 12),
             Text(
-              "Check out some of my recent work",
+              AppLocalizations.of(context)!.projectsSubTitle,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurface.withOpacity(0.7),
               ),
@@ -671,7 +669,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
               ],
             ),
             const SizedBox(height: 60),
-            GlobalButton(title: "View all projects", onPressed: () {
+            GlobalButton(title: AppLocalizations.of(context)!.viewAllProjectsBtn, onPressed: () {
               widget.onNavigate('/projects');
             })
           ],
@@ -689,7 +687,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
         child: Column(
           children: [
             Text(
-              "Get in Touch",
+              AppLocalizations.of(context)!.getInTouchTitle,
               style: Theme.of(context).textTheme.displayLarge?.copyWith(
                 fontSize: 40,
                 fontWeight: FontWeight.bold,
@@ -698,7 +696,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
             ),
             const SizedBox(height: 12),
             Text(
-              "Have a project in mind? Let's work together.",
+              AppLocalizations.of(context)!.getInTouchSubTitle,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurface.withOpacity(0.7),
               ),
@@ -746,7 +744,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Send Message",
+                            AppLocalizations.of(context)!.sendMessageBtn,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
@@ -839,6 +837,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     required VoidCallback onPressed,
   }) {
     final colorTheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Tooltip(
       message: tooltip,
       child: Container(
@@ -855,7 +854,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
             customBorder: const CircleBorder(),
             child: Icon(
               icon,
-              color: Colors.white,
+              color: isDark? DarkColorTheme.backgroundColor : LightColorTheme.backgroundColor,
               size: 22,
             ),
           ),

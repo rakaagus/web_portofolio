@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HoverTechStackCard extends StatefulWidget {
   final bool isDark;
@@ -24,13 +25,11 @@ class HoverTechStackCardState extends State<HoverTechStackCard> {
   final double _itemWidth = 110.0;
 
   final List<Map<String, dynamic>> _techItems = [
-    {'name': 'MySQL', 'icon': Icons.storage},
-    {'name': 'Tailwind', 'icon': Icons.waves},
-    {'name': 'Redis', 'icon': Icons.layers},
-    {'name': 'Firebase', 'icon': Icons.local_fire_department},
-    {'name': 'Git', 'icon': Icons.merge_type},
-    {'name': 'Flutter', 'icon': Icons.flutter_dash},
-    {'name': 'Android', 'icon': Icons.android},
+    {'name': 'Flutter', 'icon': FontAwesomeIcons.flutter},
+    {'name': 'Kotlin', 'icon': 'assets/images/kotlin_logo.png'},
+    {'name': 'Firebase', 'icon': 'assets/images/firebase_icon.png'},
+    {'name': 'Dart', 'icon': FontAwesomeIcons.dartLang},
+    {'name': 'Android', 'icon': FontAwesomeIcons.android},
   ];
 
   @override
@@ -95,18 +94,43 @@ class HoverTechStackCardState extends State<HoverTechStackCard> {
   // Helper untuk merender icon/logo.
   // Mendukung IconData (bawaan) maupun String asset path, otomatis diwarnai onSurface!
   Widget _buildTechIcon(dynamic iconData, Color color) {
+    const double iconSize = 36.0; // Samakan ukuran dasar icon & gambar
+
+    Widget child;
     if (iconData is IconData) {
-      return Icon(iconData, size: 36, color: color);
-    } else if (iconData is String) {
-      return Image.asset(
+      child = Icon(
         iconData,
-        height: 36,
-        width: 36,
-        color: color, // Auto-tint logo menggunakan warna onSurface
-        errorBuilder: (context, error, stackTrace) => Icon(Icons.code, size: 36, color: color),
+        size: iconSize,
+        color: color,
+      );
+    } else if (iconData is String) {
+      child = Image.asset(
+        iconData,
+        height: iconSize,
+        width: iconSize,
+        fit: BoxFit.contain, // Menjaga proporsi gambar
+        color: color, // Menyamakan warna ikon dengan tema. Hapus baris ini jika ingin warna asli logo!
+        colorBlendMode: BlendMode.srcIn,
+        errorBuilder: (context, error, stackTrace) => Icon(
+          Icons.code,
+          size: iconSize,
+          color: color,
+        ),
+      );
+    } else {
+      child = Icon(
+        Icons.code,
+        size: iconSize,
+        color: color,
       );
     }
-    return Icon(Icons.code, size: 36, color: color);
+
+    // Bungkus dalam SizedBox berukuran tetap agar posisi teks di bawahnya 100% konsisten
+    return SizedBox(
+      width: 40,
+      height: 40,
+      child: Center(child: child),
+    );
   }
 
   @override
@@ -170,15 +194,15 @@ class HoverTechStackCardState extends State<HoverTechStackCard> {
                           children: [
                             _buildTechIcon(
                               item['icon'],
-                              widget.colorScheme.onSurface.withOpacity(0.8),
+                              widget.colorScheme.onSurface,
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 5),
                             Text(
                               item['name'],
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
-                                color: widget.colorScheme.onSurface.withOpacity(0.5),
+                                color: widget.colorScheme.onSurface,
                               ),
                             ),
                           ],

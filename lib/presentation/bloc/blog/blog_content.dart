@@ -3,6 +3,7 @@ import 'package:web_portofolio/presentation/widget/empty_data_widget.dart';
 import 'package:web_portofolio/presentation/widget/global_footer.dart';
 import 'package:web_portofolio/presentation/widget/gradient_background.dart';
 import 'package:web_portofolio/presentation/widget/hovered_card_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class BlogItem {
@@ -25,7 +26,12 @@ class BlogItem {
 
 class BlogContent extends StatefulWidget {
   final ScrollController scrollController;
-  const BlogContent({super.key, required this.scrollController});
+  final Function(String url) onNavigate;
+  const BlogContent({
+    super.key,
+    required this.scrollController,
+    required this.onNavigate
+  });
 
   @override
   State<BlogContent> createState() => _BlogContentState();
@@ -42,6 +48,7 @@ class _BlogContentState extends State<BlogContent> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height; // Mengambil tinggi layar aktif
     final isMobile = screenWidth < 650;
+    final l10n = AppLocalizations.of(context)!;
 
     return Stack(
       children: [
@@ -78,7 +85,7 @@ class _BlogContentState extends State<BlogContent> {
                         children: [
                           // Title Screen
                           Text(
-                            "Posts",
+                            l10n.postTitle,
                             style: Theme.of(context).textTheme.displayLarge?.copyWith(
                               fontSize: isMobile ? 32 : 40,
                               fontWeight: FontWeight.bold,
@@ -90,7 +97,7 @@ class _BlogContentState extends State<BlogContent> {
 
                           // Deskripsi Title
                           Text(
-                            "Thoughts, notes, and things I find worth sharing.",
+                            l10n.postSubTitle,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: colorScheme.onSurface.withOpacity(0.7),
                               fontSize: 15,
@@ -99,11 +106,10 @@ class _BlogContentState extends State<BlogContent> {
                           ),
                           const SizedBox(height: 48),
 
-                          // Kondisi Tampilan Data Kosong vs Ada Data
                           if (blogs.isEmpty)
                             EmptyDataCardWidget(
-                              title: "No Blogs Found",
-                              description: "There are no blog available in here yet.",
+                              title: l10n.emptyData(l10n.footerLinkBlogs),
+                              description: l10n.emptyBlogSub,
                               isHaveButton: false,
                               iconTitle: "",
                               onPressButton: () {},
@@ -124,7 +130,11 @@ class _BlogContentState extends State<BlogContent> {
                 ),
 
                 // --- GLOBAL FOOTER ---
-                const GlobalFooter(),
+                GlobalFooter(
+                  onNavigate: (String url) {
+                    widget.onNavigate(url);
+                  },
+                )
               ],
             ),
           ),

@@ -4,6 +4,7 @@ import 'package:web_portofolio/presentation/bloc/experience/widget/job_entity.da
 import 'package:web_portofolio/presentation/widget/global_footer.dart';
 import 'package:web_portofolio/presentation/widget/gradient_background.dart';
 import 'package:web_portofolio/presentation/widget/hovered_card_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ExperienceContent extends StatefulWidget {
   final ScrollController scrollController;
@@ -139,12 +140,17 @@ class _ExperienceContentState extends State<ExperienceContent> with SingleTicker
       padding: EdgeInsets.zero,
       children: [
         _buildExperienceSection(colorScheme, isMobile, screenWidth),
-        const GlobalFooter(),
+        GlobalFooter(
+          onNavigate: (String url) {
+            widget.onNavigate(url);
+          },
+        ),
       ],
     );
   }
 
   Widget _buildExperienceSection(ColorScheme colorScheme, bool isMobile, double screenWidth) {
+    final l10n = AppLocalizations.of(context)!;
     return Stack(
       children: [
         const Positioned.fill(
@@ -164,7 +170,7 @@ class _ExperienceContentState extends State<ExperienceContent> with SingleTicker
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "Experience",
+                    l10n.experienceTitle,
                     style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       fontSize: isMobile ? 32 : 40,
                       fontWeight: FontWeight.bold,
@@ -175,7 +181,7 @@ class _ExperienceContentState extends State<ExperienceContent> with SingleTicker
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "My professional journey as a software developer.",
+                    l10n.experienceSubTitlePage,
                     style: TextStyle(
                       fontSize: isMobile ? 14 : 16,
                       color: colorScheme.onSurface.withOpacity(0.6),

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Testimonial {
   final String name;
@@ -143,7 +144,7 @@ class _TestimonialContentState extends State<TestimonialContent> {
               child: Column(
                 children: [
                   Text(
-                    "Testimonials",
+                    AppLocalizations.of(context)!.testimoniTag,
                     style: Theme.of(context).textTheme.displayLarge?.copyWith(
                       fontSize: widget.isMobile ? 32 : 40,
                       fontWeight: FontWeight.bold,
@@ -152,7 +153,7 @@ class _TestimonialContentState extends State<TestimonialContent> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    "What colleagues and clients say about our collaboration",
+                    AppLocalizations.of(context)!.testimoniDesc,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurface.withOpacity(0.7),
                     ),

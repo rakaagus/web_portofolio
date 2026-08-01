@@ -29,13 +29,7 @@ class _BlogScreenState extends BaseStatefulWidget<BlogScreen> {
 
   @override
   Widget? getRightAction() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return IconButton(
-      icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
-      onPressed: () {
-
-      },
-    );
+    return buildDefaultRightActions(context);
   }
 
   @override
@@ -60,6 +54,11 @@ class _BlogScreenState extends BaseStatefulWidget<BlogScreen> {
 
   @override
   Widget generateBody() {
-    return BlogContent(scrollController: baseScrollController);
+    return BlogContent(
+      scrollController: baseScrollController,
+      onNavigate: (String url) {
+          customNavigateTo(context, url);
+      },
+    );
   }
 }

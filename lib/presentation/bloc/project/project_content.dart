@@ -6,6 +6,7 @@ import 'package:web_portofolio/presentation/widget/global_footer.dart';
 import 'package:web_portofolio/presentation/widget/global_project_card.dart';
 import 'package:web_portofolio/presentation/widget/gradient_background.dart';
 import 'package:web_portofolio/presentation/widget/tech_chip.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProjectContent extends StatefulWidget {
   final ScrollController scrollController;
@@ -31,7 +32,6 @@ class _ProjectContentState extends State<ProjectContent> {
   final List<ProjectData> _allProjects = List.generate(
     12,
         (index) => ProjectData(
-      // PERBAIKAN PATH ASSET: Sesuaikan nama asset sesuai file asli kamu
       imagePath: 'assets/project_dummy.png',
       title: index % 2 == 0 ? "Smart Parking System $index" : "Wedding Platform $index",
       description: "A comprehensive solution with NFC integration, real-time monitoring, and seamless mobile payments.",
@@ -45,6 +45,21 @@ class _ProjectContentState extends State<ProjectContent> {
       demoIcon: index % 2 == 0 ? Icons.open_in_new_rounded : Icons.code_rounded,
     ),
   );
+
+  String _getCategoryLabel(String key, BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (key) {
+      case "Mobile":
+        return l10n.categoryMobile;
+      case "Web":
+        return l10n.categoryWeb;
+      case "Desktop":
+        return l10n.categoryDesktop;
+      case "All":
+      default:
+        return l10n.categoryAll;
+    }
+  }
 
   List<ProjectData> get _filteredProjects {
     if (_selectedCategory == "All") {
@@ -85,7 +100,11 @@ class _ProjectContentState extends State<ProjectContent> {
       padding: EdgeInsets.zero,
       children: [
         _buildProjectsSection(screenWidth),
-        const GlobalFooter(),
+        GlobalFooter(
+          onNavigate: (String url) {
+            widget.onNavigate(url);
+          },
+        ),
       ],
     );
   }
@@ -94,15 +113,13 @@ class _ProjectContentState extends State<ProjectContent> {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // BREAKPOINT RESPONSIVE LEBIH PRESISI
     final bool isMobile = screenWidth < 650;
-    // Layar >= 950px (seperti iPad Pro 1024px) akan masuk 3 kolom
     final bool isTablet = screenWidth >= 650 && screenWidth < 950;
 
     final int crossAxisCount = isMobile ? 1 : (isTablet ? 2 : 3);
-
-    // Ketinggian dinaikkan ke 580 di Tablet agar muat saat kartu lebar
     final double mainAxisExtent = isMobile ? 570 : (isTablet ? 580 : 580);
+
+    final l10n = AppLocalizations.of(context)!;
 
     return Stack(
       children: [
@@ -122,9 +139,8 @@ class _ProjectContentState extends State<ProjectContent> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // --- HEADER SECTION ---
                   Text(
-                    "Projects",
+                    l10n.projectsTitle,
                     style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       fontSize: isMobile ? 32 : 40,
                       fontWeight: FontWeight.bold,
@@ -135,7 +151,7 @@ class _ProjectContentState extends State<ProjectContent> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "Check out some of my recent work",
+                    l10n.projectsSubTitle,
                     style: TextStyle(
                       fontSize: isMobile ? 14 : 16,
                       color: colorScheme.onSurface.withOpacity(0.6),
@@ -152,7 +168,7 @@ class _ProjectContentState extends State<ProjectContent> {
                     children: _categories.map((category) {
                       final isSelected = _selectedCategory == category;
                       return ChoiceChip(
-                        label: Text(category),
+                        label: Text(_getCategoryLabel(category, context)),
                         selected: isSelected,
                         onSelected: (_) => _changeCategory(category),
                         selectedColor: colorScheme.onSurface,
@@ -182,10 +198,10 @@ class _ProjectContentState extends State<ProjectContent> {
                   // --- GRID PROJECTS ---
                   if (_paginatedProjects.isEmpty)
                     EmptyDataCardWidget(
-                      title: "No Projects Found",
-                      description: "There are no projects available in the '$_selectedCategory' category yet.",
+                      title: l10n.emptyData(l10n.projectsTitle),
+                      description: l10n.ctaProjectEmptyDesc(_selectedCategory),
                       isHaveButton: true,
-                      iconTitle: "Show All Projects",
+                      iconTitle: l10n.ctaProjectEmptyBtn,
                       buttonIcon: Icons.refresh_rounded,
                       onPressButton: () => _changeCategory("All"),
                     )
@@ -222,10 +238,10 @@ class _ProjectContentState extends State<ProjectContent> {
 
                   const SizedBox(height: 80),
                   EmptyDataCardWidget(
-                    title: "Interested in collaborating?",
-                    description: "I'm always open to discussing product design work or partnership opportunities.",
+                    title: l10n.ctaTitle,
+                    description: l10n.ctaSubtitle,
                     isHaveButton: true,
-                    iconTitle: "Start a Conversation",
+                    iconTitle: l10n.ctaButton,
                     onPressButton: () {},
                   ),
                 ],
@@ -238,6 +254,7 @@ class _ProjectContentState extends State<ProjectContent> {
   }
 
   Widget _buildPagination(bool isDark, ColorScheme colorScheme) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -248,7 +265,7 @@ class _ProjectContentState extends State<ProjectContent> {
         ),
         const SizedBox(width: 12),
         Text(
-          "Page $_currentPage of $_totalPages",
+          l10n.pageIndicator(_currentPage, _totalPages),
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: colorScheme.onSurface.withOpacity(0.8),
