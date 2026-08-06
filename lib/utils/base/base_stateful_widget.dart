@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_portofolio/presentation/bloc/loading/initial_loading.dart';
 import 'package:web_portofolio/presentation/bloc/loading/page_transition.dart';
+import 'package:web_portofolio/utils/color_theme.dart';
 import 'package:web_portofolio/utils/enum/locale_cubit.dart';
 import 'package:web_portofolio/utils/enum/theme_cubit.dart';
 
@@ -19,10 +20,12 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
   bool appBarUseBackIcon = false;
 
   late ScrollController baseScrollController;
-  bool isAppBarVisible = true;
+
+  // Gunakan ValueNotifier agar hanya widget yang mendengarkan saja yang rebuild
+  final ValueNotifier<bool> _isAppBarVisibleNotifier = ValueNotifier(true);
+  final ValueNotifier<bool> _showBackToTopNotifier = ValueNotifier(false);
   double _lastScrollOffset = 0.0;
 
-  bool showBackToTop = false;
   static bool _hasDoneInitialLoad = false;
 
   bool _isInitialLoading = false;
@@ -78,20 +81,20 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     if (baseScrollController.offset <= 0) {
-      if (!isAppBarVisible) setState(() => isAppBarVisible = true);
+      if (!_isAppBarVisibleNotifier.value) _isAppBarVisibleNotifier.value = true;
       return;
     }
 
-    if (baseScrollController.offset > screenHeight * 0.5 && !showBackToTop) {
-      setState(() => showBackToTop = true);
-    } else if (baseScrollController.offset <= screenHeight * 0.5 && showBackToTop) {
-      setState(() => showBackToTop = false);
+    if (baseScrollController.offset > screenHeight * 0.5 && !_showBackToTopNotifier.value) {
+      _showBackToTopNotifier.value = true;
+    } else if (baseScrollController.offset <= screenHeight * 0.5 && _showBackToTopNotifier.value) {
+      _showBackToTopNotifier.value = false;
     }
 
-    if (baseScrollController.offset > _lastScrollOffset && isAppBarVisible) {
-      setState(() => isAppBarVisible = false);
-    } else if (baseScrollController.offset < _lastScrollOffset && !isAppBarVisible) {
-      setState(() => isAppBarVisible = true);
+    if (baseScrollController.offset > _lastScrollOffset && _isAppBarVisibleNotifier.value) {
+      _isAppBarVisibleNotifier.value = false;
+    } else if (baseScrollController.offset < _lastScrollOffset && !_isAppBarVisibleNotifier.value) {
+      _isAppBarVisibleNotifier.value = true;
     }
     _lastScrollOffset = baseScrollController.offset;
   }
@@ -212,6 +215,7 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
   @override
   Widget build(BuildContext context) {
     final colorTheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return _provideBlocProvider(
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -228,7 +232,7 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
                 Positioned.fill(
                   child: PremiumPageTransitionOverlay(
                     isLoading: _isPageTransitionLoading || _isExitingPage,
-                    color: colorTheme.onSurface,
+                    color: isDark ? LightColorTheme.textColor : LightColorTheme.textColor,
                   ),
                 ),
                 _buildAnimatedSidebar(isDesktop),
@@ -265,73 +269,78 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
   Widget _buildFloatingAppBar(bool isDesktop) {
     if (!isUseAppBar) return const SizedBox.shrink();
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isAppBarVisibleNotifier,
+      builder: (context, isAppBarVisible, _) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final bool isHiding = _isInitialLoading || _isPageTransitionLoading || _isExitingPage;
+        final bool isHiding = _isInitialLoading || _isPageTransitionLoading || _isExitingPage;
 
-    double topPosition = 20;
-    if (isHiding) {
-      topPosition = -120;
-    } else if (!isAppBarVisible) {
-      topPosition = -100;
-    }
+        double topPosition = 20;
+        if (isHiding) {
+          topPosition = -120;
+        } else if (!isAppBarVisible) {
+          topPosition = -100;
+        }
 
-    return AnimatedPositioned(
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeOutBack,
-      top: topPosition,
-      left: isDesktop ? 20 : 15,
-      right: isDesktop ? (generateSideBar() != null ? 100 : 20) : 15,
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 350),
-        opacity: isHiding ? 0.0 : 1.0,
-        child: Container(
-          alignment: Alignment.center,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-              child: Container(
-                height: 60,
-                constraints: const BoxConstraints(maxWidth: 1600),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: (isDark ? Colors.black : Colors.white).withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.4),
-                    width: 1.5,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    if (appBarUseBackIcon)
-                      IconButton(
-                        icon: Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          color: isDark ? Colors.white : Colors.black87,
-                          size: 20,
-                        ),
-                        onPressed: () => Navigator.maybePop(context),
-                      )
-                    else if (getLeftIcon() != null)
-                      getLeftIcon()!,
-                    const SizedBox(width: 5),
-                    const FlutterLogo(size: 30),
-                    const SizedBox(width: 10),
-                    Text(
-                      getTitleLabel(),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+        return AnimatedPositioned(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeOutBack,
+          top: topPosition,
+          left: isDesktop ? 20 : 15,
+          right: isDesktop ? (generateSideBar() != null ? 100 : 20) : 15,
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 350),
+            opacity: isHiding ? 0.0 : 1.0,
+            child: Container(
+              alignment: Alignment.center,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                  child: Container(
+                    height: 60,
+                    constraints: const BoxConstraints(maxWidth: 1600),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: (isDark ? Colors.black : Colors.white).withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.4),
+                        width: 1.5,
+                      ),
                     ),
-                    const Spacer(),
-                    if (getRightAction() != null) getRightAction()!,
-                  ],
+                    child: Row(
+                      children: [
+                        if (appBarUseBackIcon)
+                          IconButton(
+                            icon: Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              color: isDark ? Colors.white : Colors.black87,
+                              size: 20,
+                            ),
+                            onPressed: () => Navigator.maybePop(context),
+                          )
+                        else if (getLeftIcon() != null)
+                          getLeftIcon()!,
+                        const SizedBox(width: 5),
+                        const FlutterLogo(size: 30),
+                        const SizedBox(width: 10),
+                        Text(
+                          getTitleLabel(),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const Spacer(),
+                        if (getRightAction() != null) getRightAction()!,
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -382,77 +391,82 @@ abstract class BaseStatefulWidget<T extends StatefulWidget> extends State<T> {
   }
 
   Widget _buildBackToTopButton(bool isDesktop) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return ValueListenableBuilder<bool>(
+      valueListenable: _showBackToTopNotifier,
+      builder: (context, showBackToTop, _) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final bool isHiding = _isInitialLoading || _isPageTransitionLoading || _isExitingPage;
-    final bool isVisible = showBackToTop && !isHiding;
+        final bool isHiding = _isInitialLoading || _isPageTransitionLoading || _isExitingPage;
+        final bool isVisible = showBackToTop && !isHiding;
 
-    return AnimatedScale(
-      duration: const Duration(milliseconds: 300),
-      scale: isVisible ? 1.0 : 0.0,
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 300),
-        opacity: isVisible ? 1.0 : 0.0,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              )
-            ],
-          ),
-          child: GestureDetector(
-            onTap: () {
-              baseScrollController.animateTo(
-                0,
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeInOut,
-              );
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withOpacity(isDark ? 0.08 : 0.2),
-                        Colors.white.withOpacity(isDark ? 0.02 : 0.1),
-                      ],
+        return AnimatedScale(
+          duration: const Duration(milliseconds: 300),
+          scale: isVisible ? 1.0 : 0.0,
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 300),
+            opacity: isVisible ? 1.0 : 0.0,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  )
+                ],
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  baseScrollController.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.white.withOpacity(isDark ? 0.08 : 0.2),
+                            Colors.white.withOpacity(isDark ? 0.02 : 0.1),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(isDark ? 0.15 : 0.4),
+                          width: 1.2,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.keyboard_arrow_up_rounded,
+                        color: isDark ? Colors.white : Colors.black87,
+                        size: 30,
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(isDark ? 0.15 : 0.4),
-                      width: 1.2,
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.keyboard_arrow_up_rounded,
-                    color: isDark ? Colors.white : Colors.black87,
-                    size: 30,
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   void customNavigateTo(BuildContext context, String url) {
     setState(() {
       _isExitingPage = true;
-      showBackToTop = false;
     });
+    _showBackToTopNotifier.value = false;
 
     Future.delayed(const Duration(milliseconds: 500), () {
       if (!mounted) return;

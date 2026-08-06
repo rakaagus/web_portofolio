@@ -101,7 +101,14 @@ class MyPortoApp extends StatelessWidget {
         }
         return PageRouteBuilder(
           settings: settings,
-          pageBuilder: (context, animation, secondaryAnimation) => page,
+          opaque: true,
+          pageBuilder: (context, animation, secondaryAnimation) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
+            return Container(
+              color: isDark ? const Color(0xFF000000) : const Color(0xFFF8FAFC),
+              child: page,
+            );
+          },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             final tween = Tween<Offset>(begin: const Offset(0.0, 0.05), end: Offset.zero)
                 .chain(CurveTween(curve: Curves.easeOutCubic));

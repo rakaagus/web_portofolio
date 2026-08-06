@@ -82,5 +82,13 @@
   "postTitle": "Postingan",
   "postSubTitle": "Pikiran, catatan, dan hal-hal yang menurut saya layak untuk dibagikan.",
   "emptyData": "Tidak ada {page} Disini!",
-  "emptyBlogSub": "Belum ada blog yang tersedia di sini."
+  "emptyBlogSub": "Belum ada blog yang tersedia di sini.",
+  "expSoulParkingRole": "Mobile Software Engineer",
+  "expSoulParkingCompany": "Soul Parking",
+  "expSoulParkingPeriod": "Feb 2025 - Sekarang",
+  "expSoulParkingDesc": "Mendorong keandalan produk dan kualitas pengalaman pengguna pada solusi parkir cerdas. Memegang kepemilikan penuh atas produk operasional utama, mengoptimalkan alur kerja antar-tim untuk mempercepat penyelesaian kendala, serta berkolaborasi dengan tim infrastruktur dan backend demi menjaga ketersediaan sistem harian.",
+  "expGoodevaRole": "Mobile Software Engineer",
+  "expGoodevaCompany": "Goodeva Technology",
+  "expGoodevaPeriod": "Nov 2021 - Jun 2022",
+  "expGoodevaDesc": "Berkontribusi dalam mengembangkan fitur pengguna pada platform bisnis dan agritech. Berkolaborasi dengan tim produk untuk menerjemahkan kebutuhan bisnis menjadi alur pengguna yang intuitif, mengoptimalkan stabilitas aplikasi, serta menghadirkan solusi digital yang berdampak."
 }

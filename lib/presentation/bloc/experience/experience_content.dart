@@ -428,7 +428,7 @@ class _ExperienceTimelineRow extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    job.period, // Tanggal kerja job tetap stabil di kanan atas
+                    job.period,
                     style: TextStyle(fontSize: 11, color: colorScheme.onSurface.withOpacity(0.4)),
                   ),
                 ],
@@ -441,7 +441,7 @@ class _ExperienceTimelineRow extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: colorScheme.onSurface, // FIX: Warna Job onSurface
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(width: 12),

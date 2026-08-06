@@ -16,31 +16,33 @@ class GlassBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
-        child: IntrinsicWidth(
-          child: LiquidGlassContainer(
-            height: 65,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            blur: 20,
-            shadowBlurRadius: 20,
-            shadowOffset: const Offset(0, 10),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: appMenuData.asMap().entries.map((entry) {
-                var item = entry.value;
-                int idx = entry.key;
-                bool isSelected = selectedIndex == idx;
-                return NavItemWidget(
-                  iconData: isSelected ? entry.value['filledIcon'] : entry.value['outlineIcon'],
-                  label: entry.value['label'],
-                  isSelected: isSelected,
-                  onTap: () => onNavigate(item['route']),
-                );
-              }).toList(),
+    return RepaintBoundary(
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+          child: IntrinsicWidth(
+            child: LiquidGlassContainer(
+              height: 65,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              blur: 12,
+              shadowBlurRadius: 20,
+              shadowOffset: const Offset(0, 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: appMenuData.asMap().entries.map((entry) {
+                  var item = entry.value;
+                  int idx = entry.key;
+                  bool isSelected = selectedIndex == idx;
+                  return NavItemWidget(
+                    iconData: isSelected ? entry.value['filledIcon'] : entry.value['outlineIcon'],
+                    label: entry.value['label'],
+                    isSelected: isSelected,
+                    onTap: () => onNavigate(item['route']),
+                  );
+                }).toList(),
+              ),
             ),
           ),
         ),

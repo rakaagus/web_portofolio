@@ -35,41 +35,43 @@ class LiquidGlassContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return AnimatedContainer(
-      duration: duration,
-      curve: Curves.fastOutSlowIn,
-      width: width,
-      height: height,
-      margin: margin,
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        border: Border.all(
-          color: Colors.white.withOpacity(isDark ? 0.12 : 0.4),
-          width: 1.2,
-        ),
-        gradient: LinearGradient(
-          begin: gradientBegin,
-          end: gradientEnd,
-          colors: [
-            Colors.white.withOpacity(isDark ? 0.08 : 0.25),
-            Colors.white.withOpacity(isDark ? 0.02 : 0.1),
+    return RepaintBoundary(
+      child: AnimatedContainer(
+        duration: duration,
+        curve: Curves.fastOutSlowIn,
+        width: width,
+        height: height,
+        margin: margin,
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          border: Border.all(
+            color: Colors.white.withOpacity(isDark ? 0.12 : 0.4),
+            width: 1.2,
+          ),
+          gradient: LinearGradient(
+            begin: gradientBegin,
+            end: gradientEnd,
+            colors: [
+              Colors.white.withOpacity(isDark ? 0.08 : 0.25),
+              Colors.white.withOpacity(isDark ? 0.02 : 0.1),
+            ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.35 : 0.1),
+              blurRadius: shadowBlurRadius,
+              offset: shadowOffset,
+            )
           ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.35 : 0.1),
-            blurRadius: shadowBlurRadius,
-            offset: shadowOffset,
-          )
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-          child: Padding(
-            padding: padding ?? EdgeInsets.zero,
-            child: child,
+        child: ClipRRect(
+          borderRadius: borderRadius,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: blur.clamp(0, 12), sigmaY: blur.clamp(0, 12)),
+            child: Padding(
+              padding: padding ?? EdgeInsets.zero,
+              child: child,
+            ),
           ),
         ),
       ),

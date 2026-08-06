@@ -102,5 +102,13 @@
       }
     }
   },
-  "emptyBlogSub": "There are no blog available in here yet."
+  "emptyBlogSub": "There are no blog available in here yet.",
+  "expSoulParkingRole": "Mobile Software Engineer",
+  "expSoulParkingCompany": "Soul Parking",
+  "expSoulParkingPeriod": "Feb 2025 - Present",
+  "expSoulParkingDesc": "Driving end-to-end product reliability and user experience for core smart parking solutions. Taking ownership of key operational products, streamlining cross-team workflows to accelerate issue resolution, and collaborating with infrastructure and backend teams to ensure high availability for daily operations.",
+  "expGoodevaRole": "Mobile Software Engineer",
+  "expGoodevaCompany": "Goodeva Technology",
+  "expGoodevaPeriod": "Nov 2021 - Jun 2022",
+  "expGoodevaDesc": "Contributed to scaling user-facing features across business and agritech platforms. Collaborated with product teams to translate complex requirements into intuitive user journeys, optimized app stability, and delivered impactful digital solutions."
 }

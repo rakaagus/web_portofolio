@@ -541,6 +541,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
 
   Widget _buildSectionExperience(ColorScheme colorScheme, bool isMobile, double screenWidth) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       color: isDark ? const Color(0xFF000000) : Colors.white,
@@ -572,10 +573,10 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                     isDark: isDark,
                     isMobile: isMobile,
                     logo: Icons.local_parking_rounded,
-                    role: "Mobile Developer",
+                    role: l10n.expSoulParkingRole,
                     company: "Soul Parking",
-                    period: "February 2025 - Present",
-                    description: "Developing and maintaining smart parking solutions using Flutter and Android. Implementing NFC payment systems and optimizing mobile app performance for thousands of daily users.",
+                    period: l10n.expSoulParkingPeriod,
+                    description: l10n.expSoulParkingDesc,
                     color: Colors.blue,
                   ),
                   const SizedBox(height: 24),
@@ -583,10 +584,10 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                     isDark: isDark,
                     isMobile: isMobile,
                     logo: Icons.code_rounded,
-                    role: "Junior Mobile Developer",
-                    company: "Previous Company",
-                    period: "2023 - 2025",
-                    description: "Collaborated with cross-functional teams to build robust mobile applications. Focused on clean code architecture and responsive UI design using Kotlin and Dart.",
+                    role: l10n.expGoodevaRole,
+                    company: l10n.expGoodevaCompany,
+                    period: l10n.expGoodevaPeriod,
+                    description: l10n.expGoodevaDesc,
                     color: Colors.green,
                   ),
                 ],

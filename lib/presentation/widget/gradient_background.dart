@@ -1,9 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-import 'dart:ui';
-import 'package:flutter/material.dart';
-
 class MeshGradientBackground extends StatelessWidget {
   final int style;
 
@@ -15,18 +12,20 @@ class MeshGradientBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return ClipRect(
-      child: Stack(
-        clipBehavior: Clip.hardEdge,
-        children: [
-          ..._buildBlobsByStyle(style, colorScheme),
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 90, sigmaY: 90),
-              child: Container(color: Colors.transparent),
+    return RepaintBoundary(
+      child: ClipRect(
+        child: Stack(
+          clipBehavior: Clip.hardEdge,
+          children: [
+            ..._buildBlobsByStyle(style, colorScheme),
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+                child: Container(color: Colors.transparent),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

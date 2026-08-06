@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:web_portofolio/utils/color_theme.dart';
 
 class PremiumPageTransitionOverlay extends StatefulWidget {
   final bool isLoading;
@@ -99,7 +100,7 @@ class _PremiumPageTransitionOverlayState extends State<PremiumPageTransitionOver
 
     // Menentukan warna balok transisi
     final blockColor = widget.color ??
-        (isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC));
+        (isDark ? LightColorTheme.textColor : LightColorTheme.textColor);
 
     const int totalBlocks = 3;
     final double pIn = _slideInController.value;

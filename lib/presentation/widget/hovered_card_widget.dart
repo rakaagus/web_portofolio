@@ -25,21 +25,23 @@ class _HoverGlassCardState extends State<HoverGlassCard> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      cursor: SystemMouseCursors.click,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOutCubic,
-        transform: Matrix4.translationValues(0, _isHovered ? -8 : 0, 0),
-        child: LiquidGlassContainer(
-          width: widget.width,
-          height: widget.height,
-          padding: widget.padding,
-          shadowBlurRadius: _isHovered ? 45 : 30,
-          shadowOffset: _isHovered ? const Offset(0, 20) : const Offset(0, 10),
-          child: widget.child,
+    return RepaintBoundary(
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        cursor: SystemMouseCursors.click,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+          transform: Matrix4.translationValues(0, _isHovered ? -8 : 0, 0),
+          child: LiquidGlassContainer(
+            width: widget.width,
+            height: widget.height,
+            padding: widget.padding,
+            shadowBlurRadius: _isHovered ? 45 : 30,
+            shadowOffset: _isHovered ? const Offset(0, 20) : const Offset(0, 10),
+            child: widget.child,
+          ),
         ),
       ),
     );
