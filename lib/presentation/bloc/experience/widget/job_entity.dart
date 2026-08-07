@@ -30,3 +30,21 @@ class CompanyExperience {
     required this.jobs,
   });
 }
+
+class OrganizationExperience {
+  final String orgName;
+  final String position;
+  final String period;
+  final String description;
+  final List<String> achievements;
+  final dynamic logo;
+
+  OrganizationExperience({
+    required this.orgName,
+    required this.position,
+    required this.period,
+    required this.description,
+    required this.achievements,
+    required this.logo,
+  });
+}

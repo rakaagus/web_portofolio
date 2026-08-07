@@ -25,6 +25,7 @@ class ExperienceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorSchema = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF111111) : Colors.white,
@@ -62,7 +63,7 @@ class ExperienceCard extends StatelessWidget {
                   Text(
                     "$company • $period",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: isDark ? colorSchema.tertiary : colorSchema.primary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -70,7 +71,7 @@ class ExperienceCard extends StatelessWidget {
                   Text(
                     description,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                      color: colorSchema.onSurface.withOpacity(0.7),
                       height: 1.6,
                     ),
                   ),

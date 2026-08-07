@@ -211,6 +211,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
 
   Widget _buildSectionAbout(ColorScheme colorScheme, bool isMobile, double screenWidth) {
     final bool isTablet = screenWidth >= 650 && screenWidth < 1100;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final profileCard = HoverSolidCard(
       padding: EdgeInsets.all(isMobile ? 24 : 40),
       child: SizedBox(
@@ -336,7 +337,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
-                  color: colorScheme.primary,
+                  color: isDark ? colorScheme.tertiary : colorScheme.primary,
                 ),
               ),
             ],
@@ -395,7 +396,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                       ),
                       Icon(
                         Icons.arrow_outward_rounded,
-                        color: colorScheme.primary,
+                        color: isDark ? colorScheme.tertiary : colorScheme.primary,
                         size: 20,
                       ),
                     ],
