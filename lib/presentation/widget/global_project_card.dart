@@ -9,7 +9,7 @@ class ProjectCard extends StatefulWidget {
   final List<Widget> techStacks;
   final VoidCallback? onTap;
   final String demoLinkText;
-  final double? width; // Parameter opsional untuk mengatur lebar kartu
+  final double? width;
 
   const ProjectCard({
     super.key,
@@ -33,6 +33,7 @@ class _ProjectCardState extends State<ProjectCard> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorSchema = Theme.of(context).colorScheme;
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isMobile = screenWidth < 900;
 
@@ -40,7 +41,6 @@ class _ProjectCardState extends State<ProjectCard> {
     final double titleFontSize = isMobile ? 18.0 : 20.0;
     final double descFontSize = isMobile ? 13.0 : 14.0;
 
-    // DEFAULT WIDTH: 380px di Desktop (untuk HomeScreen), dan 100% di Mobile
     final double? cardWidth = widget.width ?? (isMobile ? null : 380.0);
 
     return MouseRegion(
@@ -50,7 +50,7 @@ class _ProjectCardState extends State<ProjectCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOutQuart,
-        width: cardWidth, // Menggunakan lebar yang fleksibel/terkontrol
+        width: cardWidth,
         transform: Matrix4.translationValues(0, _isHovered ? -8 : 0, 0),
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF111111) : Colors.white,
@@ -105,6 +105,7 @@ class _ProjectCardState extends State<ProjectCard> {
                           style: TextStyle(
                             fontSize: titleFontSize,
                             fontWeight: FontWeight.bold,
+                            color: isDark ? colorSchema.tertiary : colorSchema.onSurface
                           ),
                         ),
                         const SizedBox(height: 10),

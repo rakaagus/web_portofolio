@@ -13,6 +13,7 @@ class GlobalFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorSchema = Theme.of(context).colorScheme;
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isMobile = screenWidth < 900;
 
@@ -47,15 +48,19 @@ class GlobalFooter extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           "Portofolio",
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? colorSchema.tertiary : colorSchema.onSurface
+                          ),
                         ),
                         const SizedBox(height: 16),
                         Text(
                           AppLocalizations.of(context)!.footerPortfolioDescription,
                           style: TextStyle(
-                            color: (isDark ? Colors.white : Colors.black).withOpacity(0.6),
+                            color: isDark ? Colors.white : Colors.black.withOpacity(0.6),
                             height: 1.6,
                           ),
                         ),
@@ -66,7 +71,12 @@ class GlobalFooter extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Links", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("Links",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? colorSchema.tertiary : colorSchema.onSurface
+                          )
+                      ),
                       const SizedBox(height: 20),
                       _FooterLink(label: "Experience", isDark: isDark, onTap: () => onNavigate('/experience')),
                       _FooterLink(label: "Projects", isDark: isDark, onTap: () => onNavigate('/projects')),
@@ -77,7 +87,12 @@ class GlobalFooter extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Connect", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("Connect",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? colorSchema.tertiary : colorSchema.onSurface
+                          ),
+                      ),
                       const SizedBox(height: 20),
                       Row(
                         children: [
@@ -110,7 +125,7 @@ class GlobalFooter extends StatelessWidget {
             AppLocalizations.of(context)!.footerCopyright,
             style: TextStyle(
               fontSize: 12,
-              color: (isDark ? Colors.white : Colors.black).withOpacity(0.4),
+              color: isDark ? Colors.white : Colors.black.withOpacity(0.4),
             ),
           ),
           if (isMobile) const SizedBox(height: 60),
