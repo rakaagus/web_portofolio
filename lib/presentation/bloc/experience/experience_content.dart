@@ -114,40 +114,28 @@ class _ExperienceContentState extends State<ExperienceContent> {
 
     return [
       OrganizationExperience(
-        orgName: l10n.orgDummy1Name,
-        position: l10n.orgDummy1Position,
-        period: l10n.orgDummy1Period,
-        description: l10n.orgDummy1Desc,
+        orgName: l10n.orgHmpstiName,
+        position: l10n.orgHmpstiPosition,
+        period: l10n.orgHmpstiPeriod,
+        description: l10n.orgHmpstiDesc,
         achievements: [
-          l10n.orgDummy1Achv1,
-          l10n.orgDummy1Achv2,
-          l10n.orgDummy1Achv3,
+          l10n.orgHmpstiAchv1,
+          l10n.orgHmpstiAchv2,
+          l10n.orgHmpstiAchv3,
         ],
         logo: Icons.groups_rounded,
       ),
       OrganizationExperience(
-        orgName: l10n.orgDummy2Name,
-        position: l10n.orgDummy2Position,
-        period: l10n.orgDummy2Period,
-        description: l10n.orgDummy2Desc,
+        orgName: l10n.orgGdscName,
+        position: l10n.orgGdscPosition,
+        period: l10n.orgGdscPeriod,
+        description: l10n.orgGdscDesc,
         achievements: [
-          l10n.orgDummy2Achv1,
-          l10n.orgDummy2Achv2,
-          l10n.orgDummy2Achv3,
+          l10n.orgGdscAchv1,
+          l10n.orgGdscAchv2,
+          l10n.orgGdscAchv3,
         ],
-        logo: Icons.rocket_launch_rounded,
-      ),
-      OrganizationExperience(
-        orgName: l10n.orgDummy3Name,
-        position: l10n.orgDummy3Position,
-        period: l10n.orgDummy3Period,
-        description: l10n.orgDummy3Desc,
-        achievements: [
-          l10n.orgDummy3Achv1,
-          l10n.orgDummy3Achv2,
-          l10n.orgDummy3Achv3,
-        ],
-        logo: Icons.event_rounded,
+        logo: Icons.groups_rounded,
       ),
     ];
   }

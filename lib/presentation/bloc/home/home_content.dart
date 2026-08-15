@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:web_portofolio/presentation/bloc/home/widget/experience_card.dart';
+import 'package:web_portofolio/presentation/bloc/home/widget/github_contribution_card.dart';
 import 'package:web_portofolio/presentation/bloc/home/widget/tech_stak_widget.dart';
 import 'package:web_portofolio/presentation/widget/global_project_card.dart';
 import 'package:web_portofolio/presentation/widget/hovered_card_widget.dart' show HoverGlassCard, HoverSolidCard;
@@ -91,6 +92,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   }
 
   Widget _buildHeroSection(ColorScheme colorScheme, bool isMobile) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       height: MediaQuery.of(context).size.height,
       width: double.infinity,
@@ -107,13 +109,15 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                   alignment: WrapAlignment.center,
                   children: [
                     ShaderMask(
-                      shaderCallback: (bounds) => const LinearGradient(
-                        colors: [Colors.black, Color(0xFF5EEAD4)],
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: isDark
+                            ? const [Color(0xFF5EEAD4), Color(0xFFFB923C)]
+                            : const [Colors.black, Color(0xFF5EEAD4)],
                       ).createShader(Offset.zero & bounds.size),
                       child: Text(
                         AppLocalizations.of(context)!.helloIntro,
                         style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                          fontSize: 56,
+                          fontSize: isMobile ? 45 : 56,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -121,16 +125,18 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                     ),
                     ShaderMask(
                       blendMode: BlendMode.srcIn,
-                      shaderCallback: (bounds) => const LinearGradient(
+                      shaderCallback: (bounds) => LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [Color(0xFF5EEAD4), Color(0xFFFB923C)],
+                          colors: isDark
+                              ? const [Color(0xFFFB923C), Color(0xFF5EEAD4)]
+                              : const [Color(0xFF5EEAD4), Color(0xFFFB923C)],
                           tileMode: TileMode.clamp
                       ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
                       child: Text(
                         AppLocalizations.of(context)!.myName,
                         style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                          fontSize: 56,
+                          fontSize: isMobile ? 45 : 56,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -430,6 +436,11 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       colorScheme: colorScheme,
       isDark: Theme.of(context).brightness == Brightness.dark,
       isMobile: isMobile,
+    );
+
+    final githubContributionCard = GithubContributionCard(
+      githubUsername: "rakaagus",
+      isDark: isDark,
     );
 
     return SizedBox(

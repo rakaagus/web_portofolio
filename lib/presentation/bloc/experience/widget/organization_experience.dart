@@ -36,8 +36,8 @@ class OrganizationTimelineRow extends StatelessWidget {
                   height: 14,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: colorScheme.primary.withOpacity(0.3),
-                    border: Border.all(color: colorScheme.primary, width: 2.5),
+                    color: Colors.transparent,
+                    border: Border.all(color: colorScheme.onSurface, width: 2.5),
                   ),
                   alignment: Alignment.center,
                   child: Container(
@@ -45,7 +45,7 @@ class OrganizationTimelineRow extends StatelessWidget {
                     height: 4,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: colorScheme.primary,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -77,6 +77,7 @@ class OrganizationTimelineRow extends StatelessWidget {
 
   Widget _buildCardContent(BuildContext context) {
     final org = organization;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final Widget logoWidget = Container(
       padding: EdgeInsets.all(isMobile ? 8 : 10),
@@ -86,7 +87,7 @@ class OrganizationTimelineRow extends StatelessWidget {
       ),
       child: Icon(
         org.logo is IconData ? org.logo : Icons.groups_rounded,
-        color: colorScheme.tertiary,
+        color: isDark ? colorScheme.tertiary : colorScheme.primary,
         size: isMobile ? 24 : 26,
       ),
     );
@@ -114,7 +115,7 @@ class OrganizationTimelineRow extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: colorScheme.tertiary,
+                            color: isDark ? colorScheme.tertiary : colorScheme.primary,
                           ),
                         ),
                       ),
@@ -157,7 +158,7 @@ class OrganizationTimelineRow extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: colorScheme.tertiary,
+                      color: isDark ? colorScheme.tertiary : colorScheme.primary,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -196,7 +197,7 @@ class OrganizationTimelineRow extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 7),
-                child: Icon(Icons.star_rounded, size: 14, color: colorScheme.tertiary.withOpacity(0.7)),
+                child: Icon(Icons.star_rounded, size: 14, color: isDark ? colorScheme.tertiary : colorScheme.onSurface),
               ),
               const SizedBox(width: 12),
               Expanded(

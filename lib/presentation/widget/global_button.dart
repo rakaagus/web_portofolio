@@ -21,7 +21,9 @@ class _GlobalButtonState extends State<GlobalButton> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
     final colorScheme = Theme.of(context).colorScheme;
+    final bool isMobile = screenWidth < 650;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return MouseRegion(
@@ -32,8 +34,10 @@ class _GlobalButtonState extends State<GlobalButton> {
         style: ElevatedButton.styleFrom(
           backgroundColor: colorScheme.onSurface,
           foregroundColor: colorScheme.surface,
-          padding: const EdgeInsets.symmetric(
-              horizontal: 25, vertical: 20),
+          padding: EdgeInsets.symmetric(
+            horizontal: isMobile ? 20 : 25,
+            vertical: isMobile ? 16 : 20,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
