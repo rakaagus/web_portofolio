@@ -150,5 +150,14 @@
   "gtRole2Period": "Nov 2021 - Feb 2022",
   "gtRole2Resp1": "Developing authentication flows (Login & Profile), planting schedules, and profit-sharing features for the Pertahara app.",
   "gtRole2Resp2": "Resolving bugs and refining interface flows according to developer team guidance.",
-  "gtRole2Resp3": "Collaborating with the team to deliver feature updates on schedule."
+  "gtRole2Resp3": "Collaborating with the team to deliver feature updates on schedule.",
+
+  "testimonial1Name": "Fikri Pratama",
+  "testimonial1Role": "Data Analyst",
+  "testimonial1Relation": "PM Capstone project at Bangkit Academy",
+  "testimonial1Content": "It was a great opportunity to collaborate with Raka on our Bangkit Academy capstone project. He is a highly reliable Android Developer. Throughout our collaboration, Raka demonstrated great enthusiasm, strong problem-solving skills, and high initiative in feature development and design. He is open to feedback, communicative, and professional. I highly recommend Raka Agus Maulana for Android Developer roles.",
+  "testimonial2Name": "Anjeni Siswoko",
+  "testimonial2Role": "Product Manager",
+  "testimonial2Relation": "Soulparking",
+  "testimonial2Content": "Raka is an exceptionally reliable and technically sharp Mobile Engineer. He doesn't just build features; he actively challenges product thinking for the best mobile UX. His work ethic, ownership, and adaptability during changing requirements are outstanding. Raka brings great energy and truly elevates the entire team."
 }

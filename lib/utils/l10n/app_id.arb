@@ -130,5 +130,14 @@
   "gtRole2Period": "Nov 2021 - Feb 2022",
   "gtRole2Resp1": "Mengembangkan fitur alur masuk (Login & Profil), jadwal tanam, serta fitur bagi hasil pada aplikasi Pertahara.",
   "gtRole2Resp2": "Memperbaiki bug pada aplikasi dan menyesuaikan alur antarmuka sesuai dengan arahan tim pengembang.",
-  "gtRole2Resp3": "Bekerja sama dengan tim untuk menyelesaikan pembuatan fitur tepat waktu."
+  "gtRole2Resp3": "Bekerja sama dengan tim untuk menyelesaikan pembuatan fitur tepat waktu.",
+
+  "testimonial1Name": "Fikri Pratama",
+  "testimonial1Role": "Data Analyst",
+  "testimonial1Relation": "PM Capstone Project di Bangkit Academy",
+  "testimonial1Content": "Sungguh kesempatan yang menyenangkan bisa berkolaborasi dengan Raka di capstone project Bangkit Academy. Dia merupakan Android Developer yang sangat bisa diandalkan. Selama berkolaborasi, Raka menunjukkan semangat, problem solving, serta inisiatif yang tinggi dalam pengembangan fitur aplikasi dan desain. Dia selalu terbuka pada feedback, komunikatif, dan memiliki etos kerja yang baik. Saya sangat merekomendasikan Raka Agus Maulana untuk posisi Android Developer.",
+  "testimonial2Name": "Anjeni Siswoko",
+  "testimonial2Role": "Product Manager",
+  "testimonial2Relation": "Soulparking",
+  "testimonial2Content": "Raka adalah Mobile Engineer yang sangat bisa diandalkan dan tajam secara teknis. Ia tak sekadar mengeksekusi fitur, tetapi aktif memberi masukan produk demi UX seluler terbaik. Etos kerja, ownership, dan ketenangannya saat terjadi perubahan requirement sangat luar biasa. Raka membawa energi positif dan benar-benar meningkatkan kualitas tim."
 }

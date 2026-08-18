@@ -31,50 +31,48 @@ class _TestimonialContentState extends State<TestimonialContent> {
   late PageController _pageController;
   late int _currentIndex;
 
+  List<Testimonial> getTestimonials(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return [
+      Testimonial(
+        name: l10n.testimonial1Name,
+        role: "${l10n.testimonial1Role} - ${l10n.testimonial1Relation}",
+        initials: "FP",
+        quote: l10n.testimonial1Content,
+        color: Colors.blue.shade100,
+      ),
+      Testimonial(
+        name: l10n.testimonial2Name,
+        role: "${l10n.testimonial2Role} - ${l10n.testimonial2Relation}",
+        quote: l10n.testimonial2Content,
+        initials: "AS",
+        color: Colors.purple.shade100,
+      ),
+    ];
+  }
+
   final List<Testimonial> _testimonials = [
     Testimonial(
       name: "John Doe",
       role: "PRODUCT MANAGER, TECHCORP",
       quote: "Raka is an exceptional developer who consistently delivers high-quality code. His expertise in Flutter helped us launch our MVP ahead of schedule.",
-      initials: "JD",
+      initials: "FP",
       color: Colors.blue.shade100,
-    ),
-    Testimonial(
-      name: "Alice Smith",
-      role: "LEAD DESIGNER, CREATIVE STUDIO",
-      quote: "The attention to detail in the UI/UX of our mobile app was outstanding. Raka's ability to bridge the gap between design and engineering is rare.",
-      initials: "AS",
-      color: Colors.cyan.shade100,
-    ),
-    Testimonial(
-      name: "Michael Kim",
-      role: "CTO, SOUL PARKING",
-      quote: "A reliable and proactive engineer. He didn't just build what was asked; he suggested improvements that significantly enhanced our system's performance.",
-      initials: "MK",
-      color: Colors.grey.shade300,
-    ),
-    Testimonial(
-      name: "Sarah Lee",
-      role: "FOUNDER, STARTUP INC",
-      quote: "Working with this team was a game-changer. They understand both business needs and technical constraints perfectly.",
-      initials: "SL",
-      color: Colors.purple.shade100,
     ),
   ];
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = (_testimonials.length * 1000) + 1;
+    _currentIndex = 1000;
 
-    // Inisialisasi awal PageController sesuai ukuran layar pertama kali dimuat
     _pageController = PageController(
       initialPage: _currentIndex,
-      viewportFraction: widget.isMobile ? 1.0 : 0.38, // 1.0 di HP agar hanya tampil 1 card
+      viewportFraction: widget.isMobile ? 1.0 : 0.38,
     );
   }
 
-  // SOLUSI BUG: Memastikan PageController di-update secara dinamis saat ukuran layar berubah
   @override
   void didUpdateWidget(covariant TestimonialContent oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -112,6 +110,7 @@ class _TestimonialContentState extends State<TestimonialContent> {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final containerBg = isDark ? const Color(0xFF111111) : Colors.white;
+    final testimonials = getTestimonials(context);
 
     return Center(
       child: Container(
@@ -185,7 +184,7 @@ class _TestimonialContentState extends State<TestimonialContent> {
                         },
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
-                          final actualDataIndex = index % _testimonials.length;
+                          final actualDataIndex = index % testimonials.length;
 
                           return AnimatedBuilder(
                             animation: _pageController,
@@ -195,8 +194,6 @@ class _TestimonialContentState extends State<TestimonialContent> {
                               if (_pageController.position.haveDimensions) {
                                 double page = _pageController.page ?? 0;
                                 double diff = (page - index).abs();
-
-                                // Di mobile, kartu samping langsung tidak terlihat karena fraction = 1.0
                                 value = (1 - (diff * (widget.isMobile ? 0.2 : 0.25))).clamp(0.75, 1.0);
                                 opacity = (1 - (diff * (widget.isMobile ? 0.7 : 0.6))).clamp(0.2, 1.0);
                               } else {
@@ -214,19 +211,17 @@ class _TestimonialContentState extends State<TestimonialContent> {
                                 ),
                               );
                             },
-                            child: _buildTestimonialCard(_testimonials[actualDataIndex], isDark, colorScheme),
+                            child: _buildTestimonialCard(testimonials[actualDataIndex], isDark, colorScheme),
                           );
                         },
                       ),
                     ),
 
-                    // 2. Kiri & Kanan Blur + Gradient Masking (HANYA MUNCUL DI DESKTOP)
                     if (!widget.isMobile) ...[
                       _buildEdgeOverlay(isLeft: true, containerBg: containerBg, width: overlayWidth),
                       _buildEdgeOverlay(isLeft: false, containerBg: containerBg, width: overlayWidth),
                     ],
 
-                    // 3. Tombol Navigasi Desktop (Melayang di sisi kanan & kiri, di atas blur)
                     if (!widget.isMobile) ...[
                       Positioned(
                         left: 24,
