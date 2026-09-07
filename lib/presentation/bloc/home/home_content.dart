@@ -12,8 +12,16 @@ import 'package:web_portofolio/presentation/widget/gradient_background.dart';
 import 'package:web_portofolio/presentation/widget/tech_chip.dart';
 import 'package:web_portofolio/utils/color_theme.dart';
 import 'widget/testimonial_section_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web_portofolio/domain/model/ui/project_ui_model.dart';
+import 'package:web_portofolio/presentation/Navigation/app_routes.dart';
+import 'package:web_portofolio/presentation/bloc/home/bloc/home_bloc.dart';
+import 'package:web_portofolio/presentation/bloc/home/bloc/home_state.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:web_portofolio/presentation/widget/scroll_reveal_widget.dart';
+import 'package:web_portofolio/presentation/widget/collaboration_dialog.dart';
+
 
 class HomeContent extends StatefulWidget {
   final ScrollController scrollController;
@@ -27,6 +35,9 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> with SingleTickerProviderStateMixin {
   late AnimationController _arrowController;
   late Animation<double> _arrowAnimation;
+  final TextEditingController _contactNameController = TextEditingController();
+  final TextEditingController _contactEmailController = TextEditingController();
+  final TextEditingController _contactMessageController = TextEditingController();
 
   @override
   void initState() {
@@ -44,6 +55,9 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   @override
   void dispose() {
     _arrowController.dispose();
+    _contactNameController.dispose();
+    _contactEmailController.dispose();
+    _contactMessageController.dispose();
     super.dispose();
   }
 
@@ -438,11 +452,6 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       isMobile: isMobile,
     );
 
-    final githubContributionCard = GithubContributionCard(
-      githubUsername: "rakaagus",
-      isDark: isDark,
-    );
-
     return SizedBox(
       width: double.infinity,
       child: Stack(
@@ -457,55 +466,99 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
             ),
             child: Column(
               children: [
-                Text(
-                  AppLocalizations.of(context)!.aboutTitle,
-                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  AppLocalizations.of(context)!.aboutDesc,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface,
+                ScrollRevealWidget(
+                  delay: Duration.zero,
+                  offsetSlide: 25,
+                  child: Column(
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.aboutTitle,
+                        style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        AppLocalizations.of(context)!.aboutDesc,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 60),
                 if (isMobile)
                   Column(
                     children: [
-                      profileCard,
+                      ScrollRevealWidget(
+                        delay: const Duration(milliseconds: 0),
+                        offsetSlide: 30,
+                        child: profileCard,
+                      ),
                       const SizedBox(height: 24),
-                      bioCard,
+                      ScrollRevealWidget(
+                        delay: const Duration(milliseconds: 80),
+                        offsetSlide: 30,
+                        child: bioCard,
+                      ),
                       const SizedBox(height: 24),
-                      educationCard,
+                      ScrollRevealWidget(
+                        delay: const Duration(milliseconds: 140),
+                        offsetSlide: 30,
+                        child: educationCard,
+                      ),
                       const SizedBox(height: 24),
-                      blogsCard,
+                      ScrollRevealWidget(
+                        delay: const Duration(milliseconds: 200),
+                        offsetSlide: 30,
+                        child: blogsCard,
+                      ),
                       const SizedBox(height: 24),
-                      techStackCard,
+                      ScrollRevealWidget(
+                        delay: const Duration(milliseconds: 260),
+                        offsetSlide: 30,
+                        child: techStackCard,
+                      ),
                     ],
                   )
                 else if (isTablet)
                   Column(
                     children: [
-                      profileCard,
+                      ScrollRevealWidget(
+                        delay: const Duration(milliseconds: 0),
+                        offsetSlide: 30,
+                        child: profileCard,
+                      ),
                       const SizedBox(height: 24),
-                      bioCard,
+                      ScrollRevealWidget(
+                        delay: const Duration(milliseconds: 80),
+                        offsetSlide: 30,
+                        child: bioCard,
+                      ),
                       const SizedBox(height: 24),
-                      IntrinsicHeight(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Expanded(child: educationCard),
-                            const SizedBox(width: 24),
-                            Expanded(child: blogsCard),
-                          ],
+                      ScrollRevealWidget(
+                        delay: const Duration(milliseconds: 140),
+                        offsetSlide: 30,
+                        child: IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(child: educationCard),
+                              const SizedBox(width: 24),
+                              Expanded(child: blogsCard),
+                            ],
+                          ),
                         ),
                       ),
                       const SizedBox(height: 24),
-                      techStackCard,
+                      ScrollRevealWidget(
+                        delay: const Duration(milliseconds: 200),
+                        offsetSlide: 30,
+                        child: techStackCard,
+                      ),
                     ],
                   )
                 else
@@ -515,7 +568,11 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                       children: [
                         Expanded(
                           flex: 4,
-                          child: profileCard,
+                          child: ScrollRevealWidget(
+                            delay: const Duration(milliseconds: 0),
+                            offsetSlide: 30,
+                            child: profileCard,
+                          ),
                         ),
                         const SizedBox(width: 24),
                         Expanded(
@@ -523,26 +580,49 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Expanded(child: bioCard),
+                              Expanded(
+                                child: ScrollRevealWidget(
+                                  delay: const Duration(milliseconds: 80),
+                                  offsetSlide: 30,
+                                  child: bioCard,
+                                ),
+                              ),
                               const SizedBox(height: 24),
                               IntrinsicHeight(
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    Expanded(child: educationCard),
+                                    Expanded(
+                                      child: ScrollRevealWidget(
+                                        delay: const Duration(milliseconds: 140),
+                                        offsetSlide: 30,
+                                        child: educationCard,
+                                      ),
+                                    ),
                                     const SizedBox(width: 24),
-                                    Expanded(child: blogsCard),
+                                    Expanded(
+                                      child: ScrollRevealWidget(
+                                        delay: const Duration(milliseconds: 200),
+                                        offsetSlide: 30,
+                                        child: blogsCard,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
                               const SizedBox(height: 24),
-                              techStackCard,
+                              ScrollRevealWidget(
+                                delay: const Duration(milliseconds: 260),
+                                offsetSlide: 30,
+                                child: techStackCard,
+                              ),
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
+
               ],
             ),
           ),
@@ -566,48 +646,71 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Column(
             children: [
-              Text(
-                AppLocalizations.of(context)!.experienceTitle,
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
+              ScrollRevealWidget(
+                delay: Duration.zero,
+                offsetSlide: 25,
+                child: Column(
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.experienceTitle,
+                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      AppLocalizations.of(context)!.experienceSubTitle,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                AppLocalizations.of(context)!.experienceSubTitle,
-                style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 60),
               Column(
                 children: [
-                  ExperienceCard(
-                    isDark: isDark,
-                    isMobile: isMobile,
-                    logo: Icons.local_parking_rounded,
-                    role: l10n.expSoulParkingRole,
-                    company: "Soul Parking",
-                    period: l10n.expSoulParkingPeriod,
-                    description: l10n.expSoulParkingDesc,
-                    color: Colors.blue,
+                  ScrollRevealWidget(
+                    delay: const Duration(milliseconds: 0),
+                    offsetSlide: 35,
+                    child: ExperienceCard(
+                      isDark: isDark,
+                      isMobile: isMobile,
+                      logo: Icons.local_parking_rounded,
+                      role: l10n.expSoulParkingRole,
+                      company: "Soul Parking",
+                      period: l10n.expSoulParkingPeriod,
+                      description: l10n.expSoulParkingDesc,
+                      color: Colors.blue,
+                    ),
                   ),
                   const SizedBox(height: 24),
-                  ExperienceCard(
-                    isDark: isDark,
-                    isMobile: isMobile,
-                    logo: Icons.code_rounded,
-                    role: l10n.expGoodevaRole,
-                    company: l10n.expGoodevaCompany,
-                    period: l10n.expGoodevaPeriod,
-                    description: l10n.expGoodevaDesc,
-                    color: Colors.green,
+                  ScrollRevealWidget(
+                    delay: const Duration(milliseconds: 140),
+                    offsetSlide: 35,
+                    child: ExperienceCard(
+                      isDark: isDark,
+                      isMobile: isMobile,
+                      logo: Icons.code_rounded,
+                      role: l10n.expGoodevaRole,
+                      company: l10n.expGoodevaCompany,
+                      period: l10n.expGoodevaPeriod,
+                      description: l10n.expGoodevaDesc,
+                      color: Colors.green,
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 50),
-              GlobalButton(title: AppLocalizations.of(context)!.viewFullExperienceBtn, onPressed: () {
-                widget.onNavigate('/experience');
-              })
+              ScrollRevealWidget(
+                delay: const Duration(milliseconds: 200),
+                offsetSlide: 20,
+                child: GlobalButton(
+                  title: AppLocalizations.of(context)!.viewFullExperienceBtn,
+                  onPressed: () {
+                    widget.onNavigate('/experience');
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -621,70 +724,81 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
         constraints: const BoxConstraints(maxWidth: 1200),
         child: Column(
           children: [
-            Text(
-              AppLocalizations.of(context)!.projectsTitle,
-              style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              AppLocalizations.of(context)!.projectsSubTitle,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurface.withOpacity(0.7),
+            ScrollRevealWidget(
+              delay: Duration.zero,
+              offsetSlide: 25,
+              child: Column(
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.projectsTitle,
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    AppLocalizations.of(context)!.projectsSubTitle,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface.withOpacity(0.7),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 60),
-            Wrap(
-              spacing: 24,
-              runSpacing: 24,
-              alignment: WrapAlignment.center,
-              children: [
-                ProjectCard(
-                  imagePath: 'assets/project_parking.png',
-                  title: "Smart Parking System",
-                  description: "A comprehensive parking solution with NFC integration, real-time monitoring, and seamless mobile payments.",
-                  techStacks: [
-                    TechChip(label: "Flutter", color: Colors.blue),
-                    TechChip(label: "Kotlin", color: Colors.orange),
-                    TechChip(label: "NFC", color: Colors.teal),
-                    TechChip(label: "Firebase", color: Colors.amber),
-                  ],
-                  category: 'Web',
-                  demoLinkText: "",
-                ),
-                ProjectCard(
-                  imagePath: 'assets/project_booking.png',
-                  title: "Wedding Reservation Platform",
-                  description: "Modular wedding invitation and attendance reservation system built for high scalability and customization.",
-                  techStacks: [
-                    TechChip(label: "Flutter Web", color: Colors.cyan),
-                    TechChip(label: "Dart", color: Colors.blue),
-                    TechChip(label: "GetX", color: Colors.purple),
-                  ],
-                  category: "Mobile",
-                  demoLinkText: "",
-                ),
-                ProjectCard(
-                  imagePath: 'assets/project_pos.png',
-                  title: "Smart POS Handheld",
-                  description: "Android-based Point of Sale system optimized for handheld devices with thermal printer and e-money support.",
-                  techStacks: [
-                    TechChip(label: "Android SDK", color: Colors.green),
-                    TechChip(label: "Kotlin", color: Colors.orange),
-                    TechChip(label: "Room DB", color: Colors.blueGrey),
-                  ],
-                  category: 'Mobile',
-                  demoLinkText: "",
-                ),
-              ],
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                List<ProjectUiModel> featured = [];
+                if (state is HomeLoaded) {
+                  featured = state.featuredProjects;
+                }
+
+                if (featured.isEmpty) {
+                  return const SizedBox.shrink();
+                }
+
+                return Wrap(
+                  spacing: 24,
+                  runSpacing: 24,
+                  alignment: WrapAlignment.center,
+                  children: featured.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final project = entry.value;
+                    return ScrollRevealWidget(
+                      delay: Duration(milliseconds: index * 130),
+                      offsetSlide: 40,
+                      child: ProjectCard(
+                        imagePath: project.imagePath,
+                        title: project.title,
+                        description: project.description,
+                        techStacks: project.techStacks.map((tech) {
+                          return TechChip(label: tech);
+                        }).toList(),
+                        category: project.category,
+                        demoLinkText: "Case Study",
+                        onTap: () {
+                          widget.onNavigate(AppRoutes.projectDetailPath(project.slug));
+                        },
+                      ),
+                    );
+                  }).toList(),
+                );
+              },
             ),
+
             const SizedBox(height: 60),
-            GlobalButton(title: AppLocalizations.of(context)!.viewAllProjectsBtn, onPressed: () {
-              widget.onNavigate('/projects');
-            })
+            ScrollRevealWidget(
+              delay: const Duration(milliseconds: 200),
+              offsetSlide: 20,
+              child: GlobalButton(
+                title: AppLocalizations.of(context)!.viewAllProjectsBtn,
+                onPressed: () {
+                  widget.onNavigate('/projects');
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -719,15 +833,15 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
               width: double.infinity,
               padding: EdgeInsets.all(isMobile ? 24 : 48),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF111111) : Colors.white,
+                color: isDark ? const Color(0xFF0F172A) : Colors.white,
                 borderRadius: BorderRadius.circular(28),
                 border: Border.all(
-                  color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.05),
+                  color: isDark ? Colors.white.withOpacity(0.12) : Colors.black.withOpacity(0.06),
                   width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withOpacity(0.15),
                     blurRadius: 40,
                     offset: const Offset(0, 20),
                   ),
@@ -736,17 +850,33 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildInputField("Name", "Your name", isDark),
-                  const SizedBox(height: 28),
-                  _buildInputField("Email", "Your email", isDark),
-                  const SizedBox(height: 28),
-                  _buildInputField("Message", "Your message", isDark, maxLines: 5),
-                  const SizedBox(height: 40),
+                  _buildInputField(
+                    "Name",
+                    "Your name",
+                    isDark,
+                    controller: _contactNameController,
+                  ),
+                  const SizedBox(height: 24),
+                  _buildInputField(
+                    "Email",
+                    "Your email",
+                    isDark,
+                    controller: _contactEmailController,
+                  ),
+                  const SizedBox(height: 24),
+                  _buildInputField(
+                    "Message",
+                    "Your message",
+                    isDark,
+                    maxLines: 5,
+                    controller: _contactMessageController,
+                  ),
+                  const SizedBox(height: 36),
                   SizedBox(
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => _handleContactSend(context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isDark ? Colors.white : const Color(0xFF0D1527),
                         foregroundColor: isDark ? Colors.black : Colors.white,
@@ -783,6 +913,45 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     );
   }
 
+  void _handleContactSend(BuildContext context) async {
+    final name = _contactNameController.text.trim();
+    final email = _contactEmailController.text.trim();
+    final message = _contactMessageController.text.trim();
+
+    if (name.isEmpty || email.isEmpty || message.isEmpty) {
+      CollaborationDialog.show(context);
+      return;
+    }
+
+    final emailUri = Uri(
+      scheme: 'mailto',
+      path: 'rakaagus.m@gmail.com',
+      queryParameters: {
+        'subject': 'Collaboration Inquiry from $name ($email)',
+        'body': 'Hi Raka,\n\n$message\n\nBest regards,\n$name\n$email',
+      },
+    );
+
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+      _contactNameController.clear();
+      _contactEmailController.clear();
+      _contactMessageController.clear();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Opening your email client to send message..."),
+            backgroundColor: Color(0xFF10B981),
+          ),
+        );
+      }
+    } else {
+      if (context.mounted) {
+        CollaborationDialog.show(context);
+      }
+    }
+  }
+
   Widget _wrapThreeSectionContent(ColorScheme colorScheme, bool isMobile, double screenWidth) {
     return SizedBox(
       width: double.infinity,
@@ -800,19 +969,25 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                 ),
                 child: _buildSectionProjectsContent(colorScheme, isMobile, screenWidth),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 60,
-                  horizontal: isMobile ? 20 : 40,
+              ScrollRevealWidget(
+                scrollController: widget.scrollController,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 60,
+                    horizontal: isMobile ? 20 : 40,
+                  ),
+                  child: TestimonialContent(isMobile: isMobile),
                 ),
-                child: TestimonialContent(isMobile: isMobile),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 120,
-                  horizontal: isMobile ? 20 : 40,
+              ScrollRevealWidget(
+                scrollController: widget.scrollController,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 120,
+                    horizontal: isMobile ? 20 : 40,
+                  ),
+                  child: _buildSectionGetInTouchContent(colorScheme, isMobile),
                 ),
-                child: _buildSectionGetInTouchContent(colorScheme, isMobile),
               ),
             ],
           ),
@@ -821,23 +996,62 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildInputField(String label, String hint, bool isDark, {int maxLines = 1}) {
+  Widget _buildInputField(
+    String label,
+    String hint,
+    bool isDark, {
+    int maxLines = 1,
+    TextEditingController? controller,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+        Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+            color: isDark ? Colors.white.withOpacity(0.9) : Colors.black87,
+          ),
+        ),
         const SizedBox(height: 8),
         TextField(
+          controller: controller,
           maxLines: maxLines,
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black87,
+            fontSize: 14,
+          ),
           decoration: InputDecoration(
             hintText: hint,
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: isDark ? Colors.white38 : Colors.black38,
+            ),
             filled: true,
-            fillColor: isDark ? const Color(0xFF111111) : const Color(0xFFF1F5F9),
+            fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+              borderSide: BorderSide(
+                color: isDark ? Colors.white.withOpacity(0.12) : Colors.black.withOpacity(0.08),
+                width: 1.0,
+              ),
             ),
-            contentPadding: const EdgeInsets.all(18),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: isDark ? Colors.white.withOpacity(0.12) : Colors.black.withOpacity(0.08),
+                width: 1.0,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7),
+                width: 1.6,
+              ),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
           ),
         ),
       ],

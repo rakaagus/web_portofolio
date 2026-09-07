@@ -1,10 +1,11 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:web_portofolio/di/injection_container.dart';
 import 'package:web_portofolio/presentation/Navigation/bottombar_widget.dart' show GlassBottomBar;
 import 'package:web_portofolio/presentation/Navigation/sidebar_widget.dart';
+import 'package:web_portofolio/presentation/bloc/experience/bloc/experiences_bloc.dart';
+import 'package:web_portofolio/presentation/bloc/experience/bloc/experiences_event.dart';
 import 'package:web_portofolio/presentation/bloc/experience/experience_content.dart';
 import 'package:web_portofolio/utils/base/base_stateful_widget.dart';
 
@@ -24,7 +25,11 @@ class _ExperienceScreenState extends BaseStatefulWidget<ExperienceScreen> {
   String get screenName => "Experiences";
 
   @override
-  List<BlocProvider> getListBloc(BuildContext context) => [];
+  List<BlocProvider> getListBloc(BuildContext context) => [
+    BlocProvider<ExperiencesBloc>(
+      create: (_) => getIt<ExperiencesBloc>()..add(const LoadExperiencesData()),
+    ),
+  ];
 
   @override
   Widget? getRightAction() {

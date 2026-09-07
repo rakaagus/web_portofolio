@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HoverTechStackCard extends StatefulWidget {
@@ -27,9 +28,14 @@ class HoverTechStackCardState extends State<HoverTechStackCard> {
   final List<Map<String, dynamic>> _techItems = [
     {'name': 'Flutter', 'icon': FontAwesomeIcons.flutter},
     {'name': 'Kotlin', 'icon': 'assets/images/kotlin_logo.png'},
-    {'name': 'Firebase', 'icon': 'assets/images/firebase_icon.png'},
-    {'name': 'Dart', 'icon': FontAwesomeIcons.dartLang},
+    {'name': 'Python', 'icon': 'assets/images/python_icon.svg'},
+    {'name': 'TypeScript', 'icon': 'assets/images/typescript_icon.svg'},
     {'name': 'Android', 'icon': FontAwesomeIcons.android},
+    {'name': 'NestJS', 'icon': 'assets/images/nest_icon.js.svg'},
+    {'name': 'Nuxt', 'icon': 'assets/images/nuxt_icon.svg'},
+    {'name': 'Flask', 'icon': 'assets/images/flask_icon.svg'},
+    {'name': 'Dart', 'icon': FontAwesomeIcons.dartLang},
+    {'name': 'Firebase', 'icon': 'assets/images/firebase_icon.png'},
   ];
 
   @override
@@ -104,19 +110,29 @@ class HoverTechStackCardState extends State<HoverTechStackCard> {
         color: color,
       );
     } else if (iconData is String) {
-      child = Image.asset(
-        iconData,
-        height: iconSize,
-        width: iconSize,
-        fit: BoxFit.contain, // Menjaga proporsi gambar
-        color: color, // Menyamakan warna ikon dengan tema. Hapus baris ini jika ingin warna asli logo!
-        colorBlendMode: BlendMode.srcIn,
-        errorBuilder: (context, error, stackTrace) => Icon(
-          Icons.code,
-          size: iconSize,
+      if (iconData.endsWith('.svg')) {
+        child = SvgPicture.asset(
+          iconData,
+          height: iconSize,
+          width: iconSize,
+          fit: BoxFit.contain,
+          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        );
+      } else {
+        child = Image.asset(
+          iconData,
+          height: iconSize,
+          width: iconSize,
+          fit: BoxFit.contain,
           color: color,
-        ),
-      );
+          colorBlendMode: BlendMode.srcIn,
+          errorBuilder: (context, error, stackTrace) => Icon(
+            Icons.code,
+            size: iconSize,
+            color: color,
+          ),
+        );
+      }
     } else {
       child = Icon(
         Icons.code,

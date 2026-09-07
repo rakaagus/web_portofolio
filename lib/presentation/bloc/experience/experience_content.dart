@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web_portofolio/domain/model/ui/certification_ui_entity.dart';
+import 'package:web_portofolio/presentation/bloc/experience/bloc/experiences_bloc.dart';
+import 'package:web_portofolio/presentation/bloc/experience/bloc/experiences_state.dart';
+import 'package:web_portofolio/presentation/bloc/experience/widget/certification_card.dart';
 import 'package:web_portofolio/presentation/bloc/experience/widget/job_entity.dart'
     show CompanyExperience, JobRole, OrganizationExperience;
 import 'package:web_portofolio/presentation/widget/global_footer.dart';
 import 'package:web_portofolio/presentation/widget/gradient_background.dart';
 import 'package:web_portofolio/presentation/bloc/experience/widget/work_experience.dart';
 import 'package:web_portofolio/presentation/bloc/experience/widget/organization_experience.dart';
+import 'package:web_portofolio/presentation/widget/scroll_reveal_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class ExperienceContent extends StatefulWidget {
   final ScrollController scrollController;
@@ -184,65 +191,80 @@ class _ExperienceContentState extends State<ExperienceContent> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    l10n.experienceTitle,
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      fontSize: isMobile ? 32 : 40,
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
-                      letterSpacing: -0.5,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.experienceSubTitlePage,
-                    style: TextStyle(
-                      fontSize: isMobile ? 14 : 16,
-                      color: colorScheme.onSurface.withOpacity(0.6),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-
-                  // --- CATEGORY FILTERS ---
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    alignment: WrapAlignment.center,
-                    children: ["Work", "Organization"].map((category) {
-                      final isSelected = _selectedCategory == category;
-                      return ChoiceChip(
-                        label: Text(
-                          category == "Work" ? l10n.categoryWork : l10n.categoryOrganization,
-                        ),
-                        selected: isSelected,
-                        onSelected: (_) {
-                          setState(() {
-                            _selectedCategory = category;
-                          });
-                        },
-                        selectedColor: colorScheme.onSurface,
-                        backgroundColor: isDark ? colorScheme.onSurface.withOpacity(0.1) : Colors.black.withOpacity(0.04),
-                        labelStyle: TextStyle(
-                          color: isSelected
-                              ? colorScheme.onPrimary
-                              : colorScheme.onSurface.withOpacity(0.7),
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          fontSize: 13,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(
-                            color: isSelected
-                                ? Colors.transparent
-                                : colorScheme.onSurface.withOpacity(0.15),
+                  ScrollRevealWidget(
+                    delay: Duration.zero,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          l10n.experienceTitle,
+                          style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                            fontSize: isMobile ? 32 : 40,
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onSurface,
+                            letterSpacing: -0.5,
                           ),
+                          textAlign: TextAlign.center,
                         ),
-                        showCheckmark: false,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      );
-                    }).toList(),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.experienceSubTitlePage,
+                          style: TextStyle(
+                            fontSize: isMobile ? 14 : 16,
+                            color: colorScheme.onSurface.withOpacity(0.6),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 32),
+
+                        // --- CATEGORY FILTERS ---
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          alignment: WrapAlignment.center,
+                          children: ["Work", "Organization", "Certifications"].map((category) {
+                            final isSelected = _selectedCategory == category;
+                            String label;
+                            if (category == "Work") {
+                              label = l10n.categoryWork;
+                            } else if (category == "Organization") {
+                              label = l10n.categoryOrganization;
+                            } else {
+                              label = l10n.categoryCertifications;
+                            }
+
+                            return ChoiceChip(
+                              label: Text(label),
+                              selected: isSelected,
+                              onSelected: (_) {
+                                setState(() {
+                                  _selectedCategory = category;
+                                });
+                              },
+                              selectedColor: colorScheme.onSurface,
+                              backgroundColor: isDark ? colorScheme.onSurface.withOpacity(0.1) : Colors.black.withOpacity(0.04),
+                              labelStyle: TextStyle(
+                                color: isSelected
+                                    ? colorScheme.onPrimary
+                                    : colorScheme.onSurface.withOpacity(0.7),
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                fontSize: 13,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                side: BorderSide(
+                                  color: isSelected
+                                      ? Colors.transparent
+                                      : colorScheme.onSurface.withOpacity(0.15),
+                                ),
+                              ),
+                              showCheckmark: false,
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 48),
 
@@ -250,24 +272,72 @@ class _ExperienceContentState extends State<ExperienceContent> {
                     ...experiences.asMap().entries.map((entry) {
                       final index = entry.key;
                       final exp = entry.value;
-                      return ExperienceTimelineRow(
-                        experience: exp,
-                        colorScheme: colorScheme,
-                        isLast: index == experiences.length - 1,
-                        isMobile: isMobile,
+                      return ScrollRevealWidget(
+                        delay: Duration(milliseconds: (index % 4) * 80),
+                        child: ExperienceTimelineRow(
+                          experience: exp,
+                          colorScheme: colorScheme,
+                          isLast: index == experiences.length - 1,
+                          isMobile: isMobile,
+                        ),
                       );
                     })
-                  else
+                  else if (_selectedCategory == "Organization")
                     ...organizations.asMap().entries.map((entry) {
                       final index = entry.key;
                       final org = entry.value;
-                      return OrganizationTimelineRow(
-                        organization: org,
-                        colorScheme: colorScheme,
-                        isLast: index == organizations.length - 1,
-                        isMobile: isMobile,
+                      return ScrollRevealWidget(
+                        delay: Duration(milliseconds: (index % 4) * 80),
+                        child: OrganizationTimelineRow(
+                          organization: org,
+                          colorScheme: colorScheme,
+                          isLast: index == organizations.length - 1,
+                          isMobile: isMobile,
+                        ),
                       );
-                    }),
+                    })
+                  else
+                    BlocBuilder<ExperiencesBloc, ExperiencesState>(
+                      builder: (context, state) {
+                        List<CertificationUiEntity> certs = [];
+                        if (state is ExperienceLoaded) {
+                          certs = state.certifications;
+                        }
+
+                        if (certs.isEmpty) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 40),
+                            child: Center(
+                              child: Text(
+                                "Belum ada sertifikasi yang ditampilkan.",
+                                style: TextStyle(
+                                  color: colorScheme.onSurface.withOpacity(0.6),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+
+                        return Column(
+                          children: certs.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final cert = entry.value;
+                            return ScrollRevealWidget(
+                              delay: Duration(milliseconds: (index % 4) * 80),
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 20),
+                                child: CertificationCard(
+                                  certification: cert,
+                                  isDark: isDark,
+                                  isMobile: isMobile,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      },
+                    ),
+
                 ],
               ),
             ),

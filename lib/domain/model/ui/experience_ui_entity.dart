@@ -33,5 +33,13 @@ class ExperienceUiEntity extends Equatable {
   }
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [
+        id,
+        companyName,
+        description,
+        role,
+        startDate,
+        endDate,
+        hasFinished,
+      ];
 }

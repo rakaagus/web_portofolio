@@ -1,11 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:web_portofolio/presentation/bloc/project/widget/dummy_project_data.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web_portofolio/domain/model/ui/project_ui_model.dart';
+import 'package:web_portofolio/presentation/Navigation/app_routes.dart';
+import 'package:web_portofolio/presentation/bloc/project/bloc/project_bloc.dart';
+import 'package:web_portofolio/presentation/bloc/project/bloc/project_event.dart';
+import 'package:web_portofolio/presentation/bloc/project/bloc/project_state.dart';
 import 'package:web_portofolio/presentation/widget/empty_data_widget.dart';
 import 'package:web_portofolio/presentation/widget/global_footer.dart';
 import 'package:web_portofolio/presentation/widget/global_project_card.dart';
 import 'package:web_portofolio/presentation/widget/gradient_background.dart';
+import 'package:web_portofolio/presentation/widget/collaboration_dialog.dart';
 import 'package:web_portofolio/presentation/widget/tech_chip.dart';
+import 'package:web_portofolio/presentation/widget/scroll_reveal_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProjectContent extends StatefulWidget {
@@ -29,23 +35,6 @@ class _ProjectContentState extends State<ProjectContent> {
 
   final List<String> _categories = ["All", "Mobile", "Web", "Desktop"];
 
-  final List<ProjectData> _allProjects = List.generate(
-    12,
-        (index) => ProjectData(
-      imagePath: 'assets/project_dummy.png',
-      title: index % 2 == 0 ? "Smart Parking System $index" : "Wedding Platform $index",
-      description: "A comprehensive solution with NFC integration, real-time monitoring, and seamless mobile payments.",
-      category: index % 2 == 0 ? "Mobile" : "Web",
-      techStacks: [
-        TechChip(label: "Flutter", color: Colors.blue),
-        TechChip(label: "Kotlin", color: Colors.orange),
-        TechChip(label: "Firebase", color: Colors.amber),
-      ],
-      demoLinkText: index % 2 == 0 ? "Demo" : "Source",
-      demoIcon: index % 2 == 0 ? Icons.open_in_new_rounded : Icons.code_rounded,
-    ),
-  );
-
   String _getCategoryLabel(String key, BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     switch (key) {
@@ -61,34 +50,12 @@ class _ProjectContentState extends State<ProjectContent> {
     }
   }
 
-  List<ProjectData> get _filteredProjects {
-    if (_selectedCategory == "All") {
-      return _allProjects;
-    }
-    return _allProjects.where((p) => p.category == _selectedCategory).toList();
-  }
-
-  int get _totalPages {
-    int total = (_filteredProjects.length / _itemsPerPage).ceil();
-    return total == 0 ? 1 : total;
-  }
-
-  List<ProjectData> get _paginatedProjects {
-    final startIndex = (_currentPage - 1) * _itemsPerPage;
-    final endIndex = startIndex + _itemsPerPage;
-    if (startIndex >= _filteredProjects.length) return [];
-
-    return _filteredProjects.sublist(
-      startIndex,
-      endIndex > _filteredProjects.length ? _filteredProjects.length : endIndex,
-    );
-  }
-
   void _changeCategory(String category) {
     setState(() {
       _selectedCategory = category;
       _currentPage = 1;
     });
+    context.read<ProjectBloc>().add(FilterProjectsByCategory(category));
   }
 
   @override
@@ -139,102 +106,148 @@ class _ProjectContentState extends State<ProjectContent> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    l10n.projectsTitle,
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      fontSize: isMobile ? 32 : 40,
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
-                      letterSpacing: -0.5,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.projectsSubTitle,
-                    style: TextStyle(
-                      fontSize: isMobile ? 14 : 16,
-                      color: colorScheme.onSurface.withOpacity(0.6),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-
-                  // --- CATEGORY FILTERS ---
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    alignment: WrapAlignment.center,
-                    children: _categories.map((category) {
-                      final isSelected = _selectedCategory == category;
-                      return ChoiceChip(
-                        label: Text(_getCategoryLabel(category, context)),
-                        selected: isSelected,
-                        onSelected: (_) => _changeCategory(category),
-                        selectedColor: colorScheme.onSurface,
-                        backgroundColor: isDark ? colorScheme.onSurface.withOpacity(0.1) : Colors.black.withOpacity(0.04),
-                        labelStyle: TextStyle(
-                          color: isSelected
-                              ? colorScheme.onPrimary
-                              : colorScheme.onSurface.withOpacity(0.7),
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          fontSize: 13,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(
-                            color: isSelected
-                                ? Colors.transparent
-                                : colorScheme.onSurface.withOpacity(0.15),
+                  ScrollRevealWidget(
+                    delay: Duration.zero,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          l10n.projectsTitle,
+                          style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                            fontSize: isMobile ? 32 : 40,
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onSurface,
+                            letterSpacing: -0.5,
                           ),
+                          textAlign: TextAlign.center,
                         ),
-                        showCheckmark: false,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      );
-                    }).toList(),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.projectsSubTitle,
+                          style: TextStyle(
+                            fontSize: isMobile ? 14 : 16,
+                            color: colorScheme.onSurface.withOpacity(0.6),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 32),
+
+                        // --- CATEGORY FILTERS ---
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          alignment: WrapAlignment.center,
+                          children: _categories.map((category) {
+                            final isSelected = _selectedCategory == category;
+                            return ChoiceChip(
+                              label: Text(_getCategoryLabel(category, context)),
+                              selected: isSelected,
+                              onSelected: (_) => _changeCategory(category),
+                              selectedColor: colorScheme.onSurface,
+                              backgroundColor: isDark ? colorScheme.onSurface.withOpacity(0.1) : Colors.black.withOpacity(0.04),
+                              labelStyle: TextStyle(
+                                color: isSelected
+                                    ? colorScheme.onPrimary
+                                    : colorScheme.onSurface.withOpacity(0.7),
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                fontSize: 13,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                side: BorderSide(
+                                  color: isSelected
+                                      ? Colors.transparent
+                                      : colorScheme.onSurface.withOpacity(0.15),
+                                ),
+                              ),
+                              showCheckmark: false,
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 48),
 
-                  // --- GRID PROJECTS ---
-                  if (_paginatedProjects.isEmpty)
-                    EmptyDataCardWidget(
-                      title: l10n.emptyData(l10n.projectsTitle),
-                      description: l10n.ctaProjectEmptyDesc(_selectedCategory),
-                      isHaveButton: true,
-                      iconTitle: l10n.ctaProjectEmptyBtn,
-                      buttonIcon: Icons.refresh_rounded,
-                      onPressButton: () => _changeCategory("All"),
-                    )
-                  else
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: crossAxisCount,
-                        crossAxisSpacing: 24,
-                        mainAxisSpacing: 24,
-                        mainAxisExtent: mainAxisExtent,
-                      ),
-                      itemCount: _paginatedProjects.length,
-                      itemBuilder: (context, index) {
-                        final project = _paginatedProjects[index];
-                        return ProjectCard(
-                          width: double.infinity, // Memastikan lebar kartu sesuai Grid
-                          imagePath: project.imagePath,
-                          title: project.title,
-                          description: project.description,
-                          category: project.category,
-                          techStacks: project.techStacks,
-                          demoLinkText: project.demoLinkText,
-                          onTap: () {
-                            widget.onNavigate(project.title);
-                          },
+                  // --- GRID PROJECTS VIA BLOC ---
+                  BlocBuilder<ProjectBloc, ProjectState>(
+                    builder: (context, state) {
+                      if (state is ProjectLoading) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 60),
+                          child: Center(child: CircularProgressIndicator()),
                         );
-                      },
-                    ),
+                      }
 
-                  const SizedBox(height: 40),
-                  if (_totalPages > 1) _buildPagination(isDark, colorScheme),
+                      List<ProjectUiModel> filteredList = [];
+                      if (state is ProjectLoaded) {
+                        filteredList = state.filteredProjects;
+                      }
+
+                      if (filteredList.isEmpty) {
+                        return EmptyDataCardWidget(
+                          title: l10n.emptyData(l10n.projectsTitle),
+                          description: l10n.ctaProjectEmptyDesc(_selectedCategory),
+                          isHaveButton: true,
+                          iconTitle: l10n.ctaProjectEmptyBtn,
+                          buttonIcon: Icons.refresh_rounded,
+                          onPressButton: () => _changeCategory("All"),
+                        );
+                      }
+
+                      final int totalPages = (filteredList.length / _itemsPerPage).ceil();
+                      final int actualTotalPages = totalPages == 0 ? 1 : totalPages;
+
+                      final startIndex = (_currentPage - 1) * _itemsPerPage;
+                      final endIndex = startIndex + _itemsPerPage;
+                      final paginatedList = startIndex >= filteredList.length
+                          ? <ProjectUiModel>[]
+                          : filteredList.sublist(
+                              startIndex,
+                              endIndex > filteredList.length ? filteredList.length : endIndex,
+                            );
+
+                      return Column(
+                        children: [
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: crossAxisCount,
+                              crossAxisSpacing: 24,
+                              mainAxisSpacing: 24,
+                              mainAxisExtent: mainAxisExtent,
+                            ),
+                            itemCount: paginatedList.length,
+                            itemBuilder: (context, index) {
+                              final project = paginatedList[index];
+                              return ScrollRevealWidget(
+                                delay: Duration(milliseconds: (index % 6) * 80),
+                                child: ProjectCard(
+                                  width: double.infinity,
+                                  imagePath: project.imagePath,
+                                  title: project.title,
+                                  description: project.description,
+                                  category: project.category,
+                                  techStacks: project.techStacks.map((tech) {
+                                    return TechChip(label: tech);
+                                  }).toList(),
+                                  demoLinkText: "Case Study",
+                                  onTap: () {
+                                    widget.onNavigate(AppRoutes.projectDetailPath(project.slug));
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 40),
+                          if (actualTotalPages > 1)
+                            _buildPagination(isDark, colorScheme, actualTotalPages),
+                        ],
+                      );
+                    },
+                  ),
 
                   const SizedBox(height: 80),
                   EmptyDataCardWidget(
@@ -242,7 +255,7 @@ class _ProjectContentState extends State<ProjectContent> {
                     description: l10n.ctaSubtitle,
                     isHaveButton: true,
                     iconTitle: l10n.ctaButton,
-                    onPressButton: () {},
+                    onPressButton: () => CollaborationDialog.show(context),
                   ),
                 ],
               ),
@@ -253,32 +266,57 @@ class _ProjectContentState extends State<ProjectContent> {
     );
   }
 
-  Widget _buildPagination(bool isDark, ColorScheme colorScheme) {
-    final l10n = AppLocalizations.of(context)!;
+  Widget _buildPagination(bool isDark, ColorScheme colorScheme, int totalPages) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
+          onPressed: _currentPage > 1
+              ? () => setState(() => _currentPage--)
+              : null,
           icon: const Icon(Icons.chevron_left_rounded),
-          onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null,
-          color: colorScheme.onSurface,
         ),
-        const SizedBox(width: 12),
-        Text(
-          l10n.pageIndicator(_currentPage, _totalPages),
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface.withOpacity(0.8),
+        const SizedBox(width: 8),
+        for (int i = 1; i <= totalPages; i++)
+          GestureDetector(
+            onTap: () => setState(() => _currentPage = i),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: _currentPage == i
+                    ? colorScheme.onSurface
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: _currentPage == i
+                      ? Colors.transparent
+                      : (isDark ? Colors.white.withOpacity(0.2) : Colors.black.withOpacity(0.1)),
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                "$i",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: _currentPage == i
+                      ? colorScheme.surface
+                      : colorScheme.onSurface,
+                ),
+              ),
+            ),
           ),
-        ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 8),
         IconButton(
+          onPressed: _currentPage < totalPages
+              ? () => setState(() => _currentPage++)
+              : null,
           icon: const Icon(Icons.chevron_right_rounded),
-          onPressed: _currentPage < _totalPages ? () => setState(() => _currentPage++) : null,
-          color: colorScheme.onSurface,
         ),
       ],
     );
   }
 }
-

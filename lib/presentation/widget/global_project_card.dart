@@ -1,5 +1,5 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:web_portofolio/presentation/widget/project_cover_widget.dart';
 
 class ProjectCard extends StatefulWidget {
   final String imagePath;
@@ -10,6 +10,7 @@ class ProjectCard extends StatefulWidget {
   final VoidCallback? onTap;
   final String demoLinkText;
   final double? width;
+  final double? height;
 
   const ProjectCard({
     super.key,
@@ -21,6 +22,7 @@ class ProjectCard extends StatefulWidget {
     required this.demoLinkText,
     this.onTap,
     this.width,
+    this.height,
   });
 
   @override
@@ -42,6 +44,7 @@ class _ProjectCardState extends State<ProjectCard> {
     final double descFontSize = isMobile ? 13.0 : 14.0;
 
     final double? cardWidth = widget.width ?? (isMobile ? null : 380.0);
+    final double? cardHeight = widget.height ?? (isMobile ? null : 560.0);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -51,6 +54,7 @@ class _ProjectCardState extends State<ProjectCard> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOutQuart,
         width: cardWidth,
+        height: cardHeight,
         transform: Matrix4.translationValues(0, _isHovered ? -8 : 0, 0),
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF111111) : Colors.white,
@@ -83,13 +87,10 @@ class _ProjectCardState extends State<ProjectCard> {
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                     child: AspectRatio(
                       aspectRatio: 16 / 10,
-                      child: Container(
-                        color: isDark ? Colors.white.withOpacity(0.02) : Colors.black.withOpacity(0.02),
-                        child: Image.asset(
-                          widget.imagePath,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, e, s) => const Icon(Icons.code, size: 40, color: Colors.grey),
-                        ),
+                      child: ProjectCoverWidget(
+                        imagePath: widget.imagePath,
+                        title: widget.title,
+                        category: widget.category,
                       ),
                     ),
                   ),
@@ -105,7 +106,7 @@ class _ProjectCardState extends State<ProjectCard> {
                           style: TextStyle(
                             fontSize: titleFontSize,
                             fontWeight: FontWeight.bold,
-                            color: isDark ? colorSchema.tertiary : colorSchema.onSurface
+                            color: isDark ? colorSchema.tertiary : colorSchema.onSurface,
                           ),
                         ),
                         const SizedBox(height: 10),

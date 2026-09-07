@@ -35,5 +35,13 @@ class PortoUiEntity extends Equatable{
   }
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [
+        id,
+        title,
+        description,
+        platform,
+        stack,
+        createDate,
+        link,
+      ];
 }

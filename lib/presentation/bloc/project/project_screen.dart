@@ -1,10 +1,11 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:web_portofolio/di/injection_container.dart';
 import 'package:web_portofolio/presentation/Navigation/bottombar_widget.dart' show GlassBottomBar;
 import 'package:web_portofolio/presentation/Navigation/sidebar_widget.dart';
+import 'package:web_portofolio/presentation/bloc/project/bloc/project_bloc.dart';
+import 'package:web_portofolio/presentation/bloc/project/bloc/project_event.dart';
 import 'package:web_portofolio/presentation/bloc/project/project_content.dart';
 import 'package:web_portofolio/utils/base/base_stateful_widget.dart';
 
@@ -24,7 +25,11 @@ class _ProjectScreenState extends BaseStatefulWidget<ProjectScreen> {
   String get screenName => "Project";
 
   @override
-  List<BlocProvider> getListBloc(BuildContext context) => [];
+  List<BlocProvider> getListBloc(BuildContext context) => [
+    BlocProvider<ProjectBloc>(
+      create: (_) => getIt<ProjectBloc>()..add(const LoadProjects()),
+    ),
+  ];
 
   @override
   Widget? getRightAction() {

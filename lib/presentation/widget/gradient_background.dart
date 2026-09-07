@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class MeshGradientBackground extends StatelessWidget {
@@ -16,15 +15,7 @@ class MeshGradientBackground extends StatelessWidget {
       child: ClipRect(
         child: Stack(
           clipBehavior: Clip.hardEdge,
-          children: [
-            ..._buildBlobsByStyle(style, colorScheme),
-            Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
-                child: Container(color: Colors.transparent),
-              ),
-            ),
-          ],
+          children: _buildBlobsByStyle(style, colorScheme),
         ),
       ),
     );
@@ -129,8 +120,15 @@ class MeshGradientBackground extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: color,
         shape: BoxShape.circle,
+        gradient: RadialGradient(
+          colors: [
+            color,
+            color.withOpacity(color.opacity * 0.45),
+            color.withOpacity(0.0),
+          ],
+          stops: const [0.0, 0.55, 1.0],
+        ),
       ),
     );
   }

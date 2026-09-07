@@ -159,5 +159,12 @@
   "testimonial2Name": "Anjeni Siswoko",
   "testimonial2Role": "Product Manager",
   "testimonial2Relation": "Soulparking",
-  "testimonial2Content": "Raka is an exceptionally reliable and technically sharp Mobile Engineer. He doesn't just build features; he actively challenges product thinking for the best mobile UX. His work ethic, ownership, and adaptability during changing requirements are outstanding. Raka brings great energy and truly elevates the entire team."
+  "testimonial2Content": "Raka is an exceptionally reliable and technically sharp Mobile Engineer. He doesn't just build features; he actively challenges product thinking for the best mobile UX. His work ethic, ownership, and adaptability during changing requirements are outstanding. Raka brings great energy and truly elevates the entire team.",
+
+  "categoryCertifications": "Licenses & Certifications",
+  "viewCredentialBtn": "Show Credential",
+  "previewDocumentBtn": "Preview Document",
+  "credentialIdLabel": "Credential ID: ",
+  "certificationsTitle": "Certifications",
+  "certificationsSubTitle": "Professional licenses and verified credentials"
 }
